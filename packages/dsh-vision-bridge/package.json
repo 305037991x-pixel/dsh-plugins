@@ -1,0 +1,22 @@
+{
+  "name": "dsh-vision-bridge",
+  "version": "0.1.0",
+  "description": "Host 插件：用户消息中的图片在进入模型前自动调用视觉 API 识图，替换为文字描述（图片与文字分离，图片走视觉模型）",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "cordis.patch.yml"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
