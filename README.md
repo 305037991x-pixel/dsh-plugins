@@ -55,19 +55,42 @@ dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/<
 
 ## 维护指南（本机改插件后发布）
 
-1. 在 `packages/<插件名>/` 里改代码；
-2. 跑一键发布脚本（同步源码、校验文件、提交推送）：
+### 日常更新流程（核心：源码改 → 一条命令发布）
+
+1. 在**源码目录**改代码（本机 DSH 通过 `link:` 直接使用源码，**改完本机立即生效**，无需重启）；
+2. 跑一键发布脚本，它会自动把 7 个源码目录同步进 `packages/`、清理本机痕迹、校验文件、扫描敏感信息、提交并推送：
 
 ```powershell
 .\publish-all.ps1 -Message "fix: xxx"
 ```
 
-脚本会：
-- 把 `packages/*` 同步到 git 暂存（排除 node_modules / 日志 / 临时脚本）；
-- 检查每个包都有 README.md / LICENSE / package.json；
-- 用 noreply 邮箱 `git add` + commit + push（自动避开 GH007 隐私拦截）。
+> 源码目录映射见 `publish-all.ps1` 顶部 `$sources`；README/LICENSE/.gitignore 以仓库维护版为准（同步时不覆盖）。
+> 新增插件：把源码目录加进 `$sources` 和 `install-all.ps1` 清单即可。
 
-新增插件：在 `packages/` 下建新目录（包名 `dsh-xxx`，带 `dsh.bundle` 声明），把安装命令加进 `README.md` 和 `install-all.ps1` 即可。
+### 另一台电脑更新（已装过插件后升到新版）
+
+**方式一（推荐，实测有效）**：重新执行同一条安装命令，pnpm 会自动升级到最新提交：
+
+```powershell
+dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/<插件名>
+```
+
+**方式二**：在 profile 目录执行 pnpm update：
+
+```powershell
+pnpm --dir "$env:USERPROFILE\.dsh\profiles\web" update <插件名>
+```
+
+更新后重启 `dsh web` 并硬刷新（Ctrl+Shift+R）。
+
+### 发布脚本参数
+
+| 参数 | 说明 |
+|------|------|
+| `-Message "..."` | 提交信息（默认 `chore: sync plugins`） |
+| `-DryRun` | 只显示将同步/提交什么，不提交不推送 |
+| `-NoPush` | 同步+提交，但不推送 |
+| `-SkipSync` | 跳过源码同步，只提交仓库现有改动 |
 
 ## 依赖
 
