@@ -18,7 +18,10 @@ $plugins = @(
     @{ Name = 'dsh-opencode-go-pricing';  Desc = 'GO 计价表同步' },
     @{ Name = 'dsh-task-notify';          Desc = '回复完成系统通知' },
     @{ Name = 'dsh-skill-browser';        Desc = '侧边栏技能浏览器' },
-    @{ Name = 'dsh-vision-bridge';        Desc = '图片自动识图转文字' }
+    @{ Name = 'dsh-vision-bridge';        Desc = '图片自动识图转文字' },
+    @{ Name = 'dsh-codex-annotations';    Desc = 'Codex 风格选中文本批注' },
+    @{ Name = 'dsh-open-file';            Desc = '产物路径单击预览/Ctrl+点击打开/文件夹定位' },
+    @{ Name = 'dsh-virtual-desktop';      Desc = '虚拟桌面 MVP（本机版）：网页看屏+远程键鼠' }
 )
 
 $repo = 'github:305037991x-pixel/dsh-plugins'

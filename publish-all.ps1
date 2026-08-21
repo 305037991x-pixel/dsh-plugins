@@ -32,6 +32,9 @@ $sources = @{
     'dsh-task-notify'         = 'D:\Deepseek\dsh-task-notify'
     'dsh-skill-browser'       = 'C:\Users\180458\.agents\skills-tools\dsh-skill-browser'
     'dsh-vision-bridge'       = 'C:\Users\180458\.agents\skills-tools\dsh-vision-bridge'
+    'dsh-codex-annotations'   = 'C:\Users\180458\.agents\skills-tools\dsh-codex-annotations'
+    'dsh-open-file'           = 'D:\Deepseek\dsh-open-file'
+    'dsh-virtual-desktop'     = 'D:\Deepseek\dsh-virtual-desktop'
 }
 
 # ── 0. 前提检查 ───────────────────────────────────────────────────

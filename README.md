@@ -2,7 +2,7 @@
 
 > 自研 DeepSeek Harness (DSH) 插件合集 · My custom DSH plugins, monorepo
 
-本仓库收录 7 个自研 DSH Web 插件，按功能分为三类。所有插件均为单仓库结构（`packages/<插件名>/`），通过 pnpm 的 git 子目录语法安装。
+本仓库收录 9 个自研 DSH Web 插件，按功能分为四类。所有插件均为单仓库结构（`packages/<插件名>/`），通过 pnpm 的 git 子目录语法安装。
 
 ## 插件清单
 
@@ -21,12 +21,20 @@
 |------|------|----------|
 | [dsh-task-notify](packages/dsh-task-notify) | 回复完成时弹 Windows 系统通知（页面失焦才弹，防打扰） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-task-notify` |
 | [dsh-skill-browser](packages/dsh-skill-browser) | 侧边栏技能浏览器：技能清单浮层 + 一键打开/更新 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-skill-browser` |
+| [dsh-codex-annotations](packages/dsh-codex-annotations) | Codex 风格选中文本批注：原文编号标记、悬停查看/编辑、输入框内注释计数徽章 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-codex-annotations` |
+| [dsh-open-file](packages/dsh-open-file) | 产物路径一体化：单击=话内预览（文本/markdown/图片/xlsx 表格），Ctrl+点击=系统默认应用打开，📂=文件管理器定位 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-open-file` |
 
 ### 👁️ 视觉能力类
 
 | 插件 | 功能 | 安装命令 |
 |------|------|----------|
 | [dsh-vision-bridge](packages/dsh-vision-bridge) | 图片进模型前自动识图转文字（通义千问 qwen-vl-max），纯文本模型也能收图 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-vision-bridge` |
+
+### 🖥️ 虚拟桌面类
+
+| 插件 | 功能 | 安装命令 |
+|------|------|----------|
+| [dsh-virtual-desktop](packages/dsh-virtual-desktop) | 虚拟桌面 MVP（本机版）：网页内看本机屏幕、远程点击/输入/按键，隔离不抢屏为下一阶段 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-virtual-desktop` |
 
 ## 快速安装
 
@@ -40,7 +48,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/305037991x-pixel/dsh-p
 .\install-all.ps1
 ```
 
-脚本会逐条执行上表的 7 条安装命令，结束后提示重启 `dsh web` 并硬刷新（Ctrl+Shift+R）。
+脚本会逐条执行上表的 10 条安装命令，结束后提示重启 `dsh web` 并硬刷新（Ctrl+Shift+R）。
 
 ### 方式二：逐条安装
 
@@ -58,7 +66,7 @@ dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/<
 ### 日常更新流程（核心：源码改 → 一条命令发布）
 
 1. 在**源码目录**改代码（本机 DSH 通过 `link:` 直接使用源码，**改完本机立即生效**，无需重启）；
-2. 跑一键发布脚本，它会自动把 7 个源码目录同步进 `packages/`、清理本机痕迹、校验文件、扫描敏感信息、提交并推送：
+2. 跑一键发布脚本，它会自动把 10 个源码目录同步进 `packages/`、清理本机痕迹、校验文件、扫描敏感信息、提交并推送：
 
 ```powershell
 .\publish-all.ps1 -Message "fix: xxx"

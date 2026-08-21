@@ -1,7 +1,7 @@
 {
-  "name": "dsh-task-notify",
+  "name": "dsh-open-file",
   "version": "0.1.0",
-  "description": "Web 插件：当前会话回复完成时弹出 Windows 系统通知（浏览器 Notification API 系统 toast）",
+  "description": "Web 插件：对话中产物路径一键处理 —— 单击=话内预览（文本/markdown/图片/xlsx 表格），Ctrl+点击=系统默认应用打开，📂=在文件管理器中定位所在文件夹",
   "private": true,
   "type": "module",
   "main": "lib/index.js",
@@ -11,9 +11,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-client-locale": "0.1.1-rc.1",
-    "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.1",
-    "@deepseek-ai/schemastery": "^3.18.1"
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "markdown-it": "^13.0.2",
+    "xlsx": "^0.18.5"
   },
   "files": [
     "lib/index.js",
@@ -26,10 +26,6 @@
       "patch": "./cordis.patch.yml"
     },
     "client": {
-      "inject": [
-        "@deepseek-ai/dsh-client-runtime",
-        "@deepseek-ai/dsh-client-locale"
-      ],
       "platform": "web"
     }
   }

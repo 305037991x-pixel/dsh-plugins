@@ -1,7 +1,7 @@
 {
-  "name": "dsh-skill-browser",
+  "name": "dsh-codex-annotations",
   "version": "0.1.0",
-  "description": "Web 插件：在输入框 Dock 展示已安装技能清单，可一键把 /技能名 写入输入框打开技能",
+  "description": "Codex 风格选中文本批注：原文编号标记、悬停查看/编辑、输入框内注释计数徽章，随消息发送完整批注",
   "private": true,
   "type": "module",
   "main": "lib/index.js",
@@ -11,12 +11,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-client-connection": "0.1.1-rc.1",
-    "@deepseek-ai/dsh-client-locale": "0.1.1-rc.1",
-    "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.1",
-    "@deepseek-ai/dsh-client-ui-conversation": "0.1.1-rc.1",
-    "@deepseek-ai/dsh-client-ui-primitives": "0.1.1-rc.1",
-    "@deepseek-ai/dsh-client-ui-slots": "0.1.1-rc.1"
+    "@deepseek-ai/dsh-client-connection": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-locale": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-conversation": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.0-rc.8"
   },
   "files": [
     "lib/index.js",

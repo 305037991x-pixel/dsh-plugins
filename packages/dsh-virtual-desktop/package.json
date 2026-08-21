@@ -1,7 +1,7 @@
 {
-  "name": "dsh-task-notify",
+  "name": "dsh-virtual-desktop",
   "version": "0.1.0",
-  "description": "Web 插件：当前会话回复完成时弹出 Windows 系统通知（浏览器 Notification API 系统 toast）",
+  "description": "DSH 虚拟桌面 MVP（本机版）：网页内看本机屏幕、远程点击/输入/按键，复刻豆包虚拟桌面的本机闭环；隔离不抢屏为下一阶段",
   "private": true,
   "type": "module",
   "main": "lib/index.js",
@@ -11,8 +11,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@deepseek-ai/dsh-client-locale": "0.1.1-rc.1",
-    "@deepseek-ai/dsh-client-runtime": "0.1.1-rc.1",
     "@deepseek-ai/schemastery": "^3.18.1"
   },
   "files": [
@@ -26,10 +24,6 @@
       "patch": "./cordis.patch.yml"
     },
     "client": {
-      "inject": [
-        "@deepseek-ai/dsh-client-runtime",
-        "@deepseek-ai/dsh-client-locale"
-      ],
       "platform": "web"
     }
   }

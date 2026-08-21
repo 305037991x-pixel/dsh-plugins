@@ -429,10 +429,7 @@ window.__ModuleLoader__.load({
 				zh,
 				en
 			}), "skill-browser: dictionaries");
-			const connection = ctx.get("connection");
-			const sessions = ctx.get("sessions");
-			if (connection === undefined || sessions === undefined) return;
-
+			// 修复闪现：侧边栏按钮不依赖 connection/sessions，始终注册
 			ctx.slots.inject("sidebar.footer.action", () => ctx.slots.register({
 				name: "sidebar.footer.action",
 				id: "skill-browser",
@@ -445,26 +442,37 @@ window.__ModuleLoader__.load({
 				id: "skill-browser",
 				order: 100,
 				locale: NS,
-				inject: () => ({
-					listSkills: (sessionId) => connection.api.skills.list({ sessionId }),
-					writeDraft: (sessionId, text) => {
-						const actx = sessions.scope(sessionId);
-						if (actx === undefined) return;
-						const conversation = actx.get("conversation");
-						if (conversation === undefined) return;
-						const input = conversation.input.for(actx);
-						const draft = input.snapshot.draft;
-						input.setDraft(draft === "" ? text : draft + " " + text);
-					},
-					submitDraft: (sessionId) => {
-						const actx = sessions.scope(sessionId);
-						if (actx === undefined) return;
-						const conversation = actx.get("conversation");
-						if (conversation === undefined) return;
-						const input = conversation.input.for(actx);
-						input.actions.submit();
+				inject: () => {
+					const connection = ctx.get("connection");
+					const sessions = ctx.get("sessions");
+					if (connection === undefined || sessions === undefined) {
+						return {
+							listSkills: async () => ({ result: { ok: false, error: { code: "not_ready", message: "connection not ready" } } }),
+							writeDraft: () => {},
+							submitDraft: () => {}
+						};
 					}
-				})
+					return {
+						listSkills: (sessionId) => connection.api.skills.list({ sessionId }),
+						writeDraft: (sessionId, text) => {
+							const actx = sessions.scope(sessionId);
+							if (actx === undefined) return;
+							const conversation = actx.get("conversation");
+							if (conversation === undefined) return;
+							const input = conversation.input.for(actx);
+							const draft = input.snapshot.draft;
+							input.setDraft(draft === "" ? text : draft + " " + text);
+						},
+						submitDraft: (sessionId) => {
+							const actx = sessions.scope(sessionId);
+							if (actx === undefined) return;
+							const conversation = actx.get("conversation");
+							if (conversation === undefined) return;
+							const input = conversation.input.for(actx);
+							input.actions.submit();
+						}
+					};
+				}
 			}, SkillBrowserPanel));
 		}
 		//#endregion
