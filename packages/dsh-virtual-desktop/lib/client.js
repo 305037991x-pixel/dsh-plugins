@@ -104,7 +104,7 @@ window.__ModuleLoader__.load({
           jsx.jsx('button', { onClick:()=>doKey('Ctrl+A'), children:'Ctrl+A' }),
         ]}),
         msg ? jsx.jsx('div', { className:'vd-hint', children: msg }) : null,
-        jsx.jsx('div', { className:'vd-callout', children: 'MVP为本机直控版：会移动你当前桌面的鼠标。下一步升级为“隔离虚拟桌面（不抢屏）”：用虚拟显示器 + 独立 RDP 会话实现后台运行。' }),
+        jsx.jsx('div', { className:'vd-callout', children: 'MVP为本机直控版：会移动你当前桌面的鼠标。下一步：以管理员运行 D:\\Deepseek\\dsh-virtual-desktop\\driver\\install-rdp-vd.ps1 后，RDP环回版可后台不抢屏（+300MB）——下一步升级为“隔离虚拟桌面（不抢屏）”：用虚拟显示器 + 独立 RDP 会话实现后台运行。' }),
       ]})
     }
 
