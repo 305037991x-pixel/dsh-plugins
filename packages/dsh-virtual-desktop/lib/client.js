@@ -39,13 +39,13 @@ window.__ModuleLoader__.load({
 
     function VirtualDesktopPanel() {
       ensureCss()
-      const [img, setImg] = React.useState(null) // { data, width, height }
-      const [busy, setBusy] = React.useState(false)
-      const [msg, setMsg] = React.useState('')
-      const [text, setText] = React.useState('')
-      const imgRef = React.useRef(null)
+      const [img, setImg] = react.useState(null) // { data, width, height }
+      const [busy, setBusy] = react.useState(false)
+      const [msg, setMsg] = react.useState('')
+      const [text, setText] = react.useState('')
+      const imgRef = react.useRef(null)
 
-      const capture = React.useCallback(async () => {
+      const capture = react.useCallback(async () => {
         setBusy(true); setMsg('截图中…')
         try {
           const j = await api('/api/virtual-desktop/capture', { quality: 68 })
@@ -56,7 +56,7 @@ window.__ModuleLoader__.load({
         finally{ setBusy(false) }
       }, [])
 
-      React.useEffect(()=>{ capture() }, [capture])
+      react.useEffect(()=>{ capture() }, [capture])
 
       const onImgClick = async (e) => {
         if (!imgRef.current) return

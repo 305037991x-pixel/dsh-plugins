@@ -56,6 +56,7 @@ window.__ModuleLoader__.load({
 			"dock.loading": "技能加载中…",
 			"dock.empty": "没有可用技能",
 			"dock.nosession": "请先打开一个会话",
+			"dock.nosessionHint": "暂无会话 — 新建一个会话后即可查看完整技能列表",
 			"dock.error": "技能列表加载失败",
 			"dock.retry": "重试",
 			"dock.open": "打开",
@@ -79,6 +80,7 @@ window.__ModuleLoader__.load({
 			"dock.loading": "Loading skills…",
 			"dock.empty": "No skills available",
 			"dock.nosession": "Open a session first",
+			"dock.nosessionHint": "No session — create a session to view the full skill list",
 			"dock.error": "Failed to load skills",
 			"dock.retry": "Retry",
 			"dock.open": "Open",
@@ -432,21 +434,45 @@ window.__ModuleLoader__.load({
 			const [query,setQuery]=react.useState("");
 			const load=react.useCallback(()=>{
 				setSkills(null);setError(null);
-				if(sessionId===undefined) return;
+				// 修复：无会话时尝试用任一可用会话兜底，避免“0 / no session”误导
+				let sid=sessionId;
+				if(sid===undefined&&sessions&&typeof sessions.list==="function"){
+					try{
+						const all=sessions.list();
+						if(all&&all.length>0){const f=all[0];sid=f&&f.header?(f.header.id||f.id):f.id;}
+					}catch(e){}
+				}
+				if(sid===undefined){ setError(null); return; }
 				const api=connection&&connection.api&&connection.api.skills;
 				if(!api){setError("connection not ready");return;}
-				api.list({sessionId}).then((pl)=>{
+				api.list({sessionId:sid}).then((pl)=>{
 					if(!pl.result.ok) throw new Error(pl.result.error.code+": "+pl.result.error.message);
 					setSkills(pl.result.value.skills);
 				}).catch((e)=>setError(String(e)));
-			},[sessionId,connection]);
+			},[sessionId,connection,sessions]);
 			react.useEffect(()=>{load();},[load]);
-			const count=skills===null?0:skills.length;
+			const count=skills===null?(sessionId===undefined?"—":0):skills.length;
 			const q=query.trim().toLowerCase();
 			const all=skills??[];
 			const filtered=all.filter((s)=>q===""||s.name.toLowerCase().includes(q)).sort((a,b)=>{const ra=RECOMMENDED.includes(a.name)?0:1,rb=RECOMMENDED.includes(b.name)?0:1;if(ra!==rb) return ra-rb;return a.name.localeCompare(b.name);});
-			const list=sessionId===undefined?react_jsx_runtime.jsx("div",{className:cssMap.empty,children:"no session"}):error!==null?react_jsx_runtime.jsx("div",{className:cssMap.error,children:error}):skills===null?react_jsx_runtime.jsx("div",{className:cssMap.empty,children:"loading"}):react_jsx_runtime.jsx("ul",{className:cssMap.list,children:filtered.map((s)=>react_jsx_runtime.jsx("li",{className:cssMap.row,children:s.name},s.name))});
-			return react_jsx_runtime.jsxs("div",{children:[react_jsx_runtime.jsx("div",{children:count}),list]});
+			const hasSession=sessionId!==undefined;
+			const header=react_jsx_runtime.jsxs("div",{className:cssMap.overlayHead,children:[
+				react_jsx_runtime.jsx("span",{className:cssMap.overlayTitle,children:[react_jsx_runtime.jsx(primitives.IconSkillOutline16,{size:14}),t("dock.label"),react_jsx_runtime.jsx("span",{children:`(${count})`})]}),
+				react_jsx_runtime.jsx("button",{type:"button",className:cssMap.retry,style:{marginLeft:"auto"},onClick:load,children:t("dock.retry")})
+			]});
+			const bodyFilter=react_jsx_runtime.jsx("input",{className:cssMap.filter,type:"text",value:query,placeholder:t("dock.filter"),"aria-label":t("dock.filter"),onChange:(e)=>setQuery(e.target.value)});
+			const list=!hasSession&&skills===null
+				?react_jsx_runtime.jsxs("div",{className:cssMap.empty,children:[react_jsx_runtime.jsx("div",{children:t("dock.nosession")}),react_jsx_runtime.jsx("div",{className:cssMap.hint,children:t("dock.nosessionHint")})]})
+				:error!==null?react_jsx_runtime.jsx("div",{className:cssMap.error,children:[error,react_jsx_runtime.jsx("button",{type:"button",className:cssMap.retry,onClick:load,children:t("dock.retry")})]})
+				:skills===null?react_jsx_runtime.jsx("div",{className:cssMap.empty,children:t("dock.loading")})
+				:filtered.length===0?react_jsx_runtime.jsx("div",{className:cssMap.empty,children:t("dock.empty")})
+				:react_jsx_runtime.jsx("ul",{className:cssMap.list,children:filtered.map((s)=>react_jsx_runtime.jsx("li",{className:cssMap.row,children:[
+					react_jsx_runtime.jsx("div",{className:cssMap.info,children:[
+						react_jsx_runtime.jsx("div",{className:cssMap.name,children:[s.name,RECOMMENDED.includes(s.name)?react_jsx_runtime.jsx("span",{className:`${cssMap.badge} ${cssMap.badgeRec}`,children:t("dock.recommended")}):null,s.modelInvocable?null:react_jsx_runtime.jsx("span",{className:cssMap.badge,children:t("dock.userOnly")})]}),
+						s.description!==""?react_jsx_runtime.jsx("div",{className:cssMap.desc,children:s.description}):null
+					]}),
+				]},s.name))});
+			return react_jsx_runtime.jsxs("div",{children:[header,react_jsx_runtime.jsxs("div",{className:cssMap.overlayBody,children:[bodyFilter,list,react_jsx_runtime.jsx("div",{className:cssMap.hint,children:t("dock.recoverHint")})]})]});
 		}
 		//#endregion
 
