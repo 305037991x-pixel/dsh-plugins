@@ -9,7 +9,7 @@ window.__ModuleLoader__.load({
 		let primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
 		//#region SkillBrowser.module.css
-		const css = ".skillBrowser_action{box-sizing:border-box;width:36px;height:36px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:8px;justify-content:center;align-items:center;display:inline-flex;flex:none}.skillBrowser_action:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.skillBrowser_action[data-open=true]{color:var(--dsw-alias-state-business-primary);background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_actionWide{box-sizing:border-box;width:100%;height:36px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:8px;align-items:center;gap:10px;padding:4px 12px;display:flex;flex:none}.skillBrowser_actionWide:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.skillBrowser_actionWide[data-open=true]{color:var(--dsw-alias-state-business-primary);background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_actionLabel{min-width:0;text-overflow:ellipsis;white-space:nowrap;flex:auto;font-size:13px;line-height:24px;overflow:hidden}.skillBrowser_overlay{box-sizing:border-box;pointer-events:auto;position:absolute;left:76px;bottom:12px;width:420px;max-width:calc(100vw - 88px);max-height:min(600px,calc(100vh - 24px));color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);border:1px solid var(--dsw-alias-border-l1);border-radius:14px;box-shadow:var(--dsw-shadow-lv2);flex-direction:column;display:flex;overflow:hidden}.skillBrowser_overlayHead{border-bottom:1px solid var(--dsw-alias-border-l1);flex:none;height:40px;align-items:center;gap:8px;padding:0 8px 0 14px;display:flex}.skillBrowser_overlayTitle{color:var(--dsw-alias-label-primary);flex:auto;font-size:13px;font-weight:500;line-height:20px;align-items:center;gap:6px;display:flex}.skillBrowser_overlayClose{width:28px;height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:8px;justify-content:center;align-items:center;display:inline-flex;flex:none}.skillBrowser_overlayClose:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.skillBrowser_overlayBody{min-height:0;flex:auto;flex-direction:column;padding:8px;display:flex}.skillBrowser_filter{box-sizing:border-box;width:100%;height:28px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);border:1px solid var(--dsw-alias-border-l2);border-radius:6px;outline:0;padding:0 8px;font-size:13px;line-height:20px;margin-bottom:6px;flex:none}.skillBrowser_filter:focus{border-color:var(--dsw-alias-state-business-primary)}.skillBrowser_list{max-height:min(440px,calc(100vh - 240px));margin:0;padding:0;list-style:none;overflow-y:auto}.skillBrowser_row{box-sizing:border-box;border-radius:8px;align-items:flex-start;gap:8px;width:100%;min-height:36px;padding:5px 4px 5px 8px;display:flex}.skillBrowser_row:hover{background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_info{min-width:0;flex:1}.skillBrowser_name{color:var(--dsw-alias-label-primary);font-family:var(--ds-font-family-code);word-break:break-all;font-size:12px;line-height:18px}.skillBrowser_badge{color:var(--dsw-alias-label-caption);border:1px solid var(--dsw-alias-border-l2);border-radius:4px;margin-left:6px;padding:0 4px;font-size:11px;line-height:16px;display:inline-block;vertical-align:1px}.skillBrowser_badgeRec{color:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-secondary);background:var(--dsw-alias-state-business-tertiary)}.skillBrowser_desc{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.skillBrowser_actions{flex:none;align-self:center;gap:2px;display:flex}.skillBrowser_open{height:24px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-interactive-bg-hover-solid);border:none;border-radius:6px;padding:0 10px;font-size:12px;line-height:24px}.skillBrowser_open:hover{color:var(--dsw-alias-label-primary)}.skillBrowser_small{height:24px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:6px;padding:0 8px;font-size:12px;line-height:24px}.skillBrowser_small:hover{color:var(--dsw-alias-label-secondary);background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_smallDanger:hover{color:var(--dsw-alias-state-error-primary)}.skillBrowser_smallConfirm{color:var(--dsw-alias-state-error-primary);border:1px solid var(--dsw-alias-state-error-secondary)}.skillBrowser_hint{color:var(--dsw-alias-label-caption);flex:none;font-size:11px;line-height:16px;padding:6px 8px 0}.skillBrowser_update{flex:none;height:28px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-interactive-bg-hover-solid);border:none;border-radius:8px;padding:0 12px;font-size:12px;line-height:28px}.skillBrowser_update:hover{color:var(--dsw-alias-label-primary)}.skillBrowser_empty{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:20px;padding:8px}.skillBrowser_error{color:var(--dsw-alias-state-error-primary);font-size:12px;line-height:20px;padding:8px}.skillBrowser_retry{margin-left:6px;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:0 0;border:none;padding:0;font-size:12px}";
+		const css = ".skillBrowser_action{box-sizing:border-box;width:36px;height:36px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:8px;justify-content:center;align-items:center;display:inline-flex;flex:none}.skillBrowser_action:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.skillBrowser_action[data-open=true]{color:var(--dsw-alias-state-business-primary);background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_actionWide{box-sizing:border-box;width:100%;height:36px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:8px;align-items:center;gap:10px;padding:4px 12px;display:flex;flex:none}.skillBrowser_actionWide:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.skillBrowser_actionWide[data-open=true]{color:var(--dsw-alias-state-business-primary);background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_actionLabel{min-width:0;text-overflow:ellipsis;white-space:nowrap;flex:auto;font-size:13px;line-height:24px;overflow:hidden}.skillBrowser_overlay{box-sizing:border-box;pointer-events:auto;position:absolute;left:76px;bottom:12px;width:420px;max-width:calc(100vw - 88px);max-height:min(600px,calc(100vh - 24px));color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);border:1px solid var(--dsw-alias-border-l1);border-radius:14px;box-shadow:var(--dsw-shadow-lv2);flex-direction:column;display:flex;overflow:hidden}.skillBrowser_overlayHead{border-bottom:1px solid var(--dsw-alias-border-l1);flex:none;height:40px;align-items:center;gap:8px;padding:0 8px 0 14px;display:flex}.skillBrowser_overlayTitle{color:var(--dsw-alias-label-primary);flex:auto;font-size:13px;font-weight:500;line-height:20px;align-items:center;gap:6px;display:flex}.skillBrowser_overlayClose{width:28px;height:28px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:8px;justify-content:center;align-items:center;display:inline-flex;flex:none}.skillBrowser_overlayClose:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}.skillBrowser_overlayBody{min-height:0;flex:auto;flex-direction:column;padding:8px;display:flex}.skillBrowser_filter{box-sizing:border-box;width:100%;height:28px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);border:1px solid var(--dsw-alias-border-l2);border-radius:6px;outline:0;padding:0 8px;font-size:13px;line-height:20px;margin-bottom:6px;flex:none}.skillBrowser_filter:focus{border-color:var(--dsw-alias-state-business-primary)}.skillBrowser_list{max-height:min(440px,calc(100vh - 240px));margin:0;padding:0;list-style:none;overflow-y:auto}.skillBrowser_row{box-sizing:border-box;border-radius:8px;align-items:flex-start;gap:8px;width:100%;min-height:36px;padding:5px 4px 5px 8px;display:flex}.skillBrowser_row:hover{background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_info{min-width:0;flex:1}.skillBrowser_name{color:var(--dsw-alias-label-primary);font-family:var(--ds-font-family-code);word-break:break-all;font-size:12px;line-height:18px}.skillBrowser_badge{color:var(--dsw-alias-label-caption);border:1px solid var(--dsw-alias-border-l2);border-radius:4px;margin-left:6px;padding:0 4px;font-size:11px;line-height:16px;display:inline-block;vertical-align:1px}.skillBrowser_badgeRec{color:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-secondary);background:var(--dsw-alias-state-business-tertiary)}.skillBrowser_desc{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.skillBrowser_actions{flex:none;align-self:center;gap:2px;display:flex}.skillBrowser_open{height:24px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-interactive-bg-hover-solid);border:none;border-radius:6px;padding:0 10px;font-size:12px;line-height:24px}.skillBrowser_open:hover{color:var(--dsw-alias-label-primary)}.skillBrowser_small{height:24px;color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:6px;padding:0 8px;font-size:12px;line-height:24px}.skillBrowser_small:hover{color:var(--dsw-alias-label-secondary);background:var(--dsw-alias-interactive-bg-hover)}.skillBrowser_smallDanger:hover{color:var(--dsw-alias-state-error-primary)}.skillBrowser_smallConfirm{color:var(--dsw-alias-state-error-primary);border:1px solid var(--dsw-alias-state-error-secondary)}.skillBrowser_hint{color:var(--dsw-alias-label-caption);flex:none;font-size:11px;line-height:16px;padding:6px 8px 0}.skillBrowser_update{flex:none;height:28px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-interactive-bg-hover-solid);border:none;border-radius:8px;padding:0 12px;font-size:12px;line-height:28px}.skillBrowser_update:hover{color:var(--dsw-alias-label-primary)}.skillBrowser_empty{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:20px;padding:8px}.skillBrowser_error{color:var(--dsw-alias-state-error-primary);font-size:12px;line-height:20px;padding:8px}.skillBrowser_settingsWrap{padding:8px 0}.skillBrowser_settingsCard{border:1px solid var(--dsw-alias-border-l1);border-radius:12px;overflow:hidden;background:var(--dsw-alias-bg-base)}.skillBrowser_settingsHead{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--dsw-alias-border-l1)}.skillBrowser_settingsBody{padding:10px 12px}.skillBrowser_retry{margin-left:6px;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:0 0;border:none;padding:0;font-size:12px}";
 		const tagId = "dsh-skill-browser/SkillBrowser.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
@@ -415,6 +415,81 @@ window.__ModuleLoader__.load({
 				]
 			});
 		}
+				//#region SkillBrowserSettingsSection（设置页内嵌版）
+		/**
+		 * 设置页「技能」区：在 settings.section 里全量展示技能列表（不再靠浮层），
+		 * 与 dshmarket 的 MarketSection 同级，点击齿轮后可见。
+		 */
+		function SkillBrowserSettingsSection(props) {
+			const { t, useSessions, listSkills, writeDraft, submitDraft } = props;
+			const sessionId = typeof useSessions === "function" ? useSessions((s) => s.current) : undefined;
+			const [skills, setSkills] = react.useState(null);
+			const [error, setError] = react.useState(null);
+			const [query, setQuery] = react.useState("");
+			const [confirmDelete, setConfirmDelete] = react.useState(null);
+			const disableDirective = (name) =>
+				`【禁用技能】` + name + `：编辑它的 SKILL.md frontmatter，添加 disable-model-invocation: true 和 user-invocable: false（其余内容保持不变），完成后确认它从技能目录消失。`;
+			const deleteDirective = (name) =>
+				`【删除技能】` + name + `：把它的整个技能目录移动到 C:\\Users\\180458\\.agents\\skills\\_trash\\ 下（保留文件，可恢复），完成后确认。`;
+			const updateDirective =
+				"【一键更新技能】请执行技能更新流程（只更新当前启用的技能，不更新已删除/_trash 回收目录里或已禁用的技能）：① 运行 npx skills check 查看可更新项；② 有可更新项则运行 npx skills update 更新（.skill-lock.json 管理的技能：find-skills、frontend-design）；③ 检查 C:\\Users\\180458\\.agents\\skills 下当前启用的、带 _meta.json 的版本化技能是否有可用的更新工具，有则更新（跳过 _trash 回收目录）；④ 完成后汇报。";
+			const load = react.useCallback(() => {
+				setSkills(null); setError(null);
+				if (sessionId === undefined) return;
+				listSkills(sessionId).then((payload) => {
+					if (!payload.result.ok) throw new Error(`${payload.result.error.code}: ${payload.result.error.message}`);
+					setSkills(payload.result.value.skills);
+				}).catch((e) => { setError(e && e.message ? e.message : String(e)); });
+			}, [sessionId, listSkills]);
+			react.useEffect(() => { load(); }, [load]);
+			const count = skills === null ? 0 : skills.length;
+			const q = query.trim().toLowerCase();
+			const all = skills ?? [];
+			const order = (a, b) => {
+				const ra = RECOMMENDED.includes(a.name) ? 0 : 1;
+				const rb = RECOMMENDED.includes(b.name) ? 0 : 1;
+				if (ra !== rb) return ra - rb;
+				return a.name.localeCompare(b.name);
+			};
+			const filtered = all.filter((s) => q === "" || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)).sort(order);
+			const mkBtn = (label, cls, onClick) => react_jsx_runtime.jsx("button", { type:"button", className: cls, onClick, children: label });
+			const rowActions = (name) => {
+				const hint = t("dock.openHint", { name });
+				const openBtn = primitives.Tooltip !== undefined
+					? react_jsx_runtime.jsx(primitives.Tooltip, { label: hint, side:"left", delayMs:400, children: react_jsx_runtime.jsx("button", { type:"button", className: cssMap.open, onClick: () => { writeDraft(sessionId, "/" + name + " "); }, children: t("dock.open") }) })
+					: react_jsx_runtime.jsx("button", { type:"button", className: cssMap.open, onClick: () => { writeDraft(sessionId, "/" + name + " "); }, children: t("dock.open") });
+				const confirming = confirmDelete === name;
+				return react_jsx_runtime.jsx("div", { className: cssMap.actions, children: [
+					openBtn,
+					react_jsx_runtime.jsx("button", { type:"button", className: cssMap.small, onClick: () => { writeDraft(sessionId, disableDirective(name)); }, children: t("dock.disable") }),
+					react_jsx_runtime.jsx("button", { type:"button", className: `${cssMap.small} ${cssMap.smallDanger}` + (confirming ? " " + cssMap.smallConfirm : ""), onClick: () => { if (!confirming) { setConfirmDelete(name); return; } writeDraft(sessionId, deleteDirective(name)); setConfirmDelete(null); }, children: confirming ? t("dock.confirmDelete") : t("dock.delete") })
+				]});
+			};
+			const list = sessionId === undefined
+				? react_jsx_runtime.jsx("div", { className: cssMap.empty, children: t("dock.nosession") })
+				: error !== null
+					? react_jsx_runtime.jsx("div", { className: cssMap.error, children: [error, react_jsx_runtime.jsx("button", { type:"button", className: cssMap.retry, onClick: load, children: t("dock.retry") })] })
+					: skills === null
+						? react_jsx_runtime.jsx("div", { className: cssMap.empty, children: t("dock.loading") })
+						: filtered.length === 0
+							? react_jsx_runtime.jsx("div", { className: cssMap.empty, children: t("dock.empty") })
+							: react_jsx_runtime.jsx("ul", { className: cssMap.list, children: filtered.map((s) => react_jsx_runtime.jsx("li", { className: cssMap.row, children: [
+								react_jsx_runtime.jsx("div", { className: cssMap.info, children: [
+									react_jsx_runtime.jsx("div", { className: cssMap.name, children: [s.name, RECOMMENDED.includes(s.name) ? react_jsx_runtime.jsx("span", { className: `${cssMap.badge} ${cssMap.badgeRec}`, children: t("dock.recommended") }) : null, s.modelInvocable ? null : react_jsx_runtime.jsx("span", { className: cssMap.badge, children: t("dock.userOnly") })] }),
+									s.description !== "" ? react_jsx_runtime.jsx("div", { className: cssMap.desc, children: s.description }) : null
+								]}),
+								rowActions(s.name)
+							]}, s.name)) });
+			return react_jsx_runtime.jsxs("div", { className: "skillBrowser_settingsWrap", children: [
+				react_jsx_runtime.jsxs("div", { className: cssMap.overlayHead, children: [
+					react_jsx_runtime.jsxs("span", { className: cssMap.overlayTitle, children: [react_jsx_runtime.jsx(primitives.IconSkillOutline16, { size:14 }), " ", t("dock.label"), react_jsx_runtime.jsx("span", { children: ` (${count})` })] }),
+					react_jsx_runtime.jsx("button", { type:"button", className: cssMap.update, title: t("dock.updateHint"), onClick: () => { if (sessionId===undefined) return; writeDraft(sessionId, updateDirective); submitDraft(sessionId); }, children: t("dock.update") })
+				]}),
+				react_jsx_runtime.jsx("input", { className: cssMap.filter, type:"text", value: query, placeholder: t("dock.filter"), "aria-label": t("dock.filter"), onChange: (e) => { setQuery(e.target.value); setConfirmDelete(null); } }),
+				list,
+				react_jsx_runtime.jsx("div", { className: cssMap.hint, children: t("dock.recoverHint") })
+			]});
+		}
 		//#endregion
 
 		//#region plugin body
@@ -425,55 +500,52 @@ window.__ModuleLoader__.load({
 		 * @param ctx - client root context。
 		 */
 		function apply(ctx) {
-			ctx.effect(() => ctx.locale.register(NS, {
-				zh,
-				en
-			}), "skill-browser: dictionaries");
-			// 修复闪现：侧边栏按钮不依赖 connection/sessions，始终注册
-			ctx.slots.inject("sidebar.footer.action", () => ctx.slots.register({
-				name: "sidebar.footer.action",
-				id: "skill-browser",
-				order: 0,
-				locale: NS
-			}, SkillBrowserAction));
-
-			ctx.slots.inject("shell.overlay", () => ctx.slots.register({
-				name: "shell.overlay",
-				id: "skill-browser",
-				order: 100,
-				locale: NS,
-				inject: () => {
-					const connection = ctx.get("connection");
-					const sessions = ctx.get("sessions");
-					if (connection === undefined || sessions === undefined) {
-						return {
-							listSkills: async () => ({ result: { ok: false, error: { code: "not_ready", message: "connection not ready" } } }),
-							writeDraft: () => {},
-							submitDraft: () => {}
-						};
-					}
+			ctx.effect(() => ctx.locale.register(NS, { zh, en }), "skill-browser: dictionaries");
+			const makeInject = () => {
+				const connection = ctx.get("connection");
+				const sessions = ctx.get("sessions");
+				if (connection === undefined || sessions === undefined) {
 					return {
-						listSkills: (sessionId) => connection.api.skills.list({ sessionId }),
-						writeDraft: (sessionId, text) => {
-							const actx = sessions.scope(sessionId);
-							if (actx === undefined) return;
-							const conversation = actx.get("conversation");
-							if (conversation === undefined) return;
-							const input = conversation.input.for(actx);
-							const draft = input.snapshot.draft;
-							input.setDraft(draft === "" ? text : draft + " " + text);
-						},
-						submitDraft: (sessionId) => {
-							const actx = sessions.scope(sessionId);
-							if (actx === undefined) return;
-							const conversation = actx.get("conversation");
-							if (conversation === undefined) return;
-							const input = conversation.input.for(actx);
-							input.actions.submit();
-						}
+						listSkills: async () => ({ result: { ok: false, error: { code: "not_ready", message: "connection not ready" } } }),
+						writeDraft: () => {},
+						submitDraft: () => {}
 					};
 				}
-			}, SkillBrowserPanel));
+				return {
+					useSessions: (sel) => {
+						const hook = sessions.useSessions;
+						return typeof hook === "function" ? hook(sel) : undefined;
+					},
+					listSkills: (sessionId) => connection.api.skills.list({ sessionId }),
+					writeDraft: (sessionId, text) => {
+						const actx = sessions.scope(sessionId);
+						if (actx === undefined) return;
+						const conversation = actx.get("conversation");
+						if (conversation === undefined) return;
+						const input = conversation.input.for(actx);
+						const draft = input.snapshot.draft;
+						input.setDraft(draft === "" ? text : draft + " " + text);
+					},
+					submitDraft: (sessionId) => {
+						const actx = sessions.scope(sessionId);
+						if (actx === undefined) return;
+						const conversation = actx.get("conversation");
+						if (conversation === undefined) return;
+						const input = conversation.input.for(actx);
+						input.actions.submit();
+					}
+				};
+			};
+			// 设置页内：「齿轮→设置」里新增「技能」分区（与 dshmarket 的 settings.section 同层）
+			ctx.slots.inject("settings.section", () => ctx.slots.register({
+				name: "settings.section",
+				id: "skill-browser",
+				order: 8,
+				label: () => ctx.locale.bind(NS)("dock.label"),
+				locale: NS,
+				inject: makeInject
+			}, SkillBrowserSettingsSection));
+			// 兼容旧交互：保留输入框气泡里的技能面板（如有 conversation.input.dock 仍可用），但不再占侧边栏/overlay
 		}
 		//#endregion
 
