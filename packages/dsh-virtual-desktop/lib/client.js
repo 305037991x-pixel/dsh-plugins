@@ -136,10 +136,22 @@ window.__ModuleLoader__.load({
       })
     }
 
+    // 设置页内虚拟桌面区（主入口）
+    function VirtualDesktopSettingsSection(props){
+      return jsx.jsx(VirtualDesktopPanel, {})
+    }
+
     const name = 'dsh-virtual-desktop'
     const inject = ['slots','locale']
     function apply(ctx){
       ctx.effect(()=> ctx.locale.register(NS, { zh, en }), 'vd: locale')
+      // 主入口：设置页「虚拟桌面」区
+      ctx.slots.inject('settings.section', () => ctx.slots.register({
+        name:'settings.section', id:'dsh-virtual-desktop', order: 9,
+        label: () => ctx.locale.bind(NS)('dock.label'),
+        locale: NS
+      }, VirtualDesktopSettingsSection))
+      // 兼容：保留侧边浮层（点击没反应常因 overlay 被其他 overlay 盖住，设置页入口不受影响）
       ctx.slots.inject('sidebar.footer.action', () => ctx.slots.register({ name:'sidebar.footer.action', id:'dsh-virtual-desktop', order: 5, locale: NS }, DockAction))
       ctx.slots.inject('shell.overlay', () => ctx.slots.register({ name:'shell.overlay', id:'dsh-virtual-desktop', order: 40, locale: NS }, OverlayPanel))
     }
