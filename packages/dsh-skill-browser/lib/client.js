@@ -415,6 +415,39 @@ window.__ModuleLoader__.load({
 				]
 			});
 		}
+		//		function SkillBrowserSettingsSection(props){
+			const {t, connection, sessions}=props;
+			let sessionId;
+			try{
+				const useSessions=sessions&&typeof sessions.useSessions==="function"?sessions.useSessions:null;
+				const cur=useSessions?useSessions((s)=>s.current):undefined;
+				sessionId=cur;
+				if(sessionId===undefined&&sessions&&typeof sessions.list==="function"){
+					const all=sessions.list();
+					if(all&&all.length>0){const f=all[0];sessionId=f&&f.header?(f.header.id||f.id):f.id;}
+				}
+			}catch(e){}
+			const [skills,setSkills]=react.useState(null);
+			const [error,setError]=react.useState(null);
+			const [query,setQuery]=react.useState("");
+			const load=react.useCallback(()=>{
+				setSkills(null);setError(null);
+				if(sessionId===undefined) return;
+				const api=connection&&connection.api&&connection.api.skills;
+				if(!api){setError("connection not ready");return;}
+				api.list({sessionId}).then((pl)=>{
+					if(!pl.result.ok) throw new Error(pl.result.error.code+": "+pl.result.error.message);
+					setSkills(pl.result.value.skills);
+				}).catch((e)=>setError(String(e)));
+			},[sessionId,connection]);
+			react.useEffect(()=>{load();},[load]);
+			const count=skills===null?0:skills.length;
+			const q=query.trim().toLowerCase();
+			const all=skills??[];
+			const filtered=all.filter((s)=>q===""||s.name.toLowerCase().includes(q)).sort((a,b)=>{const ra=RECOMMENDED.includes(a.name)?0:1,rb=RECOMMENDED.includes(b.name)?0:1;if(ra!==rb) return ra-rb;return a.name.localeCompare(b.name);});
+			const list=sessionId===undefined?react_jsx_runtime.jsx("div",{className:cssMap.empty,children:"no session"}):error!==null?react_jsx_runtime.jsx("div",{className:cssMap.error,children:error}):skills===null?react_jsx_runtime.jsx("div",{className:cssMap.empty,children:"loading"}):react_jsx_runtime.jsx("ul",{className:cssMap.list,children:filtered.map((s)=>react_jsx_runtime.jsx("li",{className:cssMap.row,children:s.name},s.name))});
+			return react_jsx_runtime.jsxs("div",{children:[react_jsx_runtime.jsx("div",{children:count}),list]});
+		}
 		//#endregion
 
 		//#region plugin body
@@ -424,94 +457,12 @@ window.__ModuleLoader__.load({
 		 * 浮层注册技能面板（shell.overlay）；两者通过 uiStore 共享开合状态。
 		 * @param ctx - client root context。
 		 */
-		function SkillBrowserSettingsSection(props) {
-			const { t } = props;
-			const connection = props.connection;
-			const sessions = props.sessions;
-			const useSessions = sessions && typeof sessions.useSessions === "function" ? sessions.useSessions : null;
-			const current = useSessions ? useSessions((s) => s.current) : undefined;
-			const sessionId = current;
-			const [skills, setSkills] = react.useState(null);
-			const [error, setError] = react.useState(null);
-			const [query, setQuery] = react.useState("");
-			const [confirmDelete, setConfirmDelete] = react.useState(null);
-			const disableDirective = (name) =>
-				`【禁用技能】` + name + `：编辑它的 SKILL.md frontmatter，添加 disable-model-invocation: true 和 user-invocable: false（其余内容保持不变），完成后确认它从技能目录消失。`;
-			const deleteDirective = (name) =>
-				`【删除技能】` + name + `：把它的整个技能目录移动到 C:\\Users\\180458\\.agents\\skills\\_trash\\ 下（保留文件，可恢复），完成后确认。`;
-			const updateDirective =
-				"【一键更新技能】请执行技能更新流程（只更新当前启用的技能，不更新已删除/_trash 回收目录里或已禁用的技能）：① 运行 npx skills check 查看可更新项；② 有可更新项则运行 npx skills update 更新；③ 完成后汇报。";
-			const load = react.useCallback(() => {
-				setSkills(null); setError(null);
-				// settings 页无会话时用任意会话兜底
-				let sid = sessionId;
-				if (sid === undefined && sessions && typeof sessions.list === "function") {
-					const all = sessions.list();
-					if (all && all.length > 0) sid = all[0].header ? all[0].header.id : all[0].id;
-					if (sid === undefined) {
-						try { const ids = Object.keys(sessions); if (ids.length) sid = ids[0]; } catch(e){}
-					}
-				}
-				if (sid === undefined) return;
-				const api = connection && connection.api && connection.api.skills;
-				if (!api) { setError("connection not ready"); return; }
-				api.list({ sessionId: sid }).then((payload) => {
-					if (!payload.result.ok) throw new Error(`${payload.result.error.code}: ${payload.result.error.message}`);
-					setSkills(payload.result.value.skills);
-				}).catch((e) => setError(e && e.message ? e.message : String(e)));
-			}, [sessionId, connection, sessions]);
-			react.useEffect(() => { load(); }, [load]);
-			const count = skills === null ? 0 : skills.length;
-			const q = query.trim().toLowerCase();
-			const all = skills ?? [];
-			const filtered = all.filter((s) => q === "" || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)).sort((a,b)=>{
-				const ra = RECOMMENDED.includes(a.name)?0:1, rb=RECOMMENDED.includes(b.name)?0:1;
-				if(ra!==rb) return ra-rb; return a.name.localeCompare(b.name);
-			});
-			const list = !connection ? react_jsx_runtime.jsx("div", { className: cssMap.empty, children: "连接未就绪" })
-				: error !== null ? react_jsx_runtime.jsx("div", { className: cssMap.error, children: [error, react_jsx_runtime.jsx("button", { type:"button", className: cssMap.retry, onClick: load, children: t("dock.retry") })] })
-				: skills === null ? react_jsx_runtime.jsx("div", { className: cssMap.empty, children: t("dock.loading") })
-				: filtered.length === 0 ? react_jsx_runtime.jsx("div", { className: cssMap.empty, children: t("dock.empty") })
-				: react_jsx_runtime.jsx("ul", { className: cssMap.list, children: filtered.map((s)=> react_jsx_runtime.jsx("li",{className: cssMap.row, children:[
-					react_jsx_runtime.jsx("div",{className: cssMap.info, children:[
-						react_jsx_runtime.jsx("div",{className: cssMap.name, children:[s.name, RECOMMENDED.includes(s.name)? react_jsx_runtime.jsx("span",{className: cssMap.badge+ " " + cssMap.badgeRec, children: t("dock.recommended")}):null, s.modelInvocable?null: react_jsx_runtime.jsx("span",{className: cssMap.badge, children: t("dock.userOnly")})]}),
-						s.description!==""? react_jsx_runtime.jsx("div",{className: cssMap.desc, children: s.description}):null
-					]}),
-					react_jsx_runtime.jsx("div",{className: cssMap.actions, children:[
-						react_jsx_runtime.jsx("button",{type:"button", className: cssMap.open, onClick:()=>{
-							if(!sessionId) return;
-							const actx=sessions.scope(sessionId); if(!actx) return;
-							const conv=actx.get("conversation"); if(!conv) return;
-							conv.input.for(actx).setDraft("/"+s.name+" ");
-						}, children: t("dock.open")}),
-						react_jsx_runtime.jsx("button",{type:"button", className: cssMap.small, onClick:()=>{
-							if(!sessionId) return;
-							const actx=sessions.scope(sessionId); if(!actx) return;
-							actx.get("conversation").input.for(actx).setDraft(`【禁用技能】`+s.name+`：编辑它的 SKILL.md frontmatter，添加 disable-model-invocation: true 和 user-invocable: false，完成后确认。`);
-						}, children: t("dock.disable")})
-					]})
-				]}, s.name))});
-			return react_jsx_runtime.jsxs("div",{children:[
-				react_jsx_runtime.jsxs("div",{className: cssMap.overlayHead, children:[
-					react_jsx_runtime.jsxs("span",{className: cssMap.overlayTitle, children:[react_jsx_runtime.jsx(primitives.IconSkillOutline16,{size:14}), " ", t("dock.label"), react_jsx_runtime.jsx("span",{children:` (${count})`})]}),
-					react_jsx_runtime.jsx("button",{type:"button", className: cssMap.update, onClick:()=>{
-						if(!sessionId) return;
-						const actx=sessions.scope(sessionId); if(!actx) return;
-						const conv=actx.get("conversation"); if(!conv) return;
-						conv.input.for(actx).setDraft(updateDirective); conv.input.for(actx).actions.submit();
-					}, children: t("dock.update")})
-				]}),
-				react_jsx_runtime.jsx("input",{className: cssMap.filter, type:"text", value: query, placeholder: t("dock.filter"), onChange:(e)=>{setQuery(e.target.value); setConfirmDelete(null);}}),
-				list
-			]});
-		}
-
 		function apply(ctx) {
 			ctx.effect(() => ctx.locale.register(NS, {
 				zh,
 				en
 			}), "skill-browser: dictionaries");
-			// 设置页：齿轮→设置 新增「技能」区
+			// 修复闪现：侧边栏按钮不依赖 connection/sessions，始终注册
 			ctx.slots.inject("settings.section", () => ctx.slots.register({
 				name: "settings.section",
 				id: "skill-browser",
@@ -519,9 +470,9 @@ window.__ModuleLoader__.load({
 				label: () => ctx.locale.bind(NS)("dock.label"),
 				locale: NS
 			}, (props) => react_jsx_runtime.jsx(SkillBrowserSettingsSection, { t: props.t, connection: ctx.get("connection"), sessions: ctx.get("sessions") })));
-			// 侧边栏：保留原有入口（用户之前说显示有问题，仅保留设置入口会导致无会话时看不到；此处保留两者，互不冲突）
-			ctx.slots.inject("sidebar.footer.action", () => ctx.slots.register({
-				name: "sidebar.footer.action",
+
+			ctx.slots.inject("sidebar.footer.action_DISABLED", () => ctx.slots.register({
+				name: "sidebar.footer.action_DISABLED",
 				id: "skill-browser",
 				order: 0,
 				locale: NS
