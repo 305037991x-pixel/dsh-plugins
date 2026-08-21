@@ -415,7 +415,7 @@ window.__ModuleLoader__.load({
 				]
 			});
 		}
-		//		function SkillBrowserSettingsSection(props){
+		function SkillBrowserSettingsSection(props){
 			const {t, connection, sessions}=props;
 			let sessionId;
 			try{
