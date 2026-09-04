@@ -10,7 +10,7 @@
 
 | 插件 | 功能 | 安装命令 |
 |------|------|----------|
-| [dsh-balance](packages/dsh-balance) | 会话头部 DeepSeek 余额芯片（3 分钟自动刷新，悬停看明细） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-balance` |
+| [dsh-balance](packages/dsh-balance) | 会话头部余额芯片：DeepSeek + OpenRouter 双账户（3 分钟自动刷新，悬停看两家明细） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-balance` |
 | [dsh-opencode-go](packages/dsh-opencode-go) | 会话头部 OpenCode GO 双账号用量芯片（滚动 5h/周/月 三窗口） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-opencode-go` |
 | [dsh-conversation-cost](packages/dsh-conversation-cost) | 对话底部实时显示本轮/总会话额度费用（GO 美元估算 + DeepSeek 人民币） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-conversation-cost` |
 | [dsh-opencode-go-pricing](packages/dsh-opencode-go-pricing) | 与 models.dev 同步 OpenCode GO 模型显示名（2x-usage 标记） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-opencode-go-pricing` |

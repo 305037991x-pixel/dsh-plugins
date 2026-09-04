@@ -25,7 +25,7 @@ $root = $PSScriptRoot
 # ── 源码目录映射（真源码 → 发布副本）───────────────────────────────
 # 修改源码后运行本脚本，packages/ 下的对应目录会被自动同步。
 $sources = @{
-    'dsh-balance'             = 'C:\Users\180458\.agents\skills-tools\dsh-balance'
+    'dsh-balance'             = 'C:\Users\liang\.agents\skills-tools\dsh-balance'
     'dsh-opencode-go'         = 'C:\Users\180458\.agents\skills-tools\dsh-opencode-go'
     'dsh-conversation-cost'   = 'D:\Deepseek\dsh-conversation-cost'
     'dsh-opencode-go-pricing' = 'D:\Deepseek\dsh-opencode-go-pricing'
