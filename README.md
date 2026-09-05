@@ -2,43 +2,29 @@
 
 > 自研 DeepSeek Harness (DSH) 插件合集 · My custom DSH plugins, monorepo
 
-本仓库收录 9 个自研 DSH Web 插件，按功能分为四类。所有插件均为单仓库结构（`packages/<插件名>/`），通过 pnpm 的 git 子目录语法安装。
+本仓库收录 2 个自研 DSH Web 插件（`packages/<插件名>/`），通过 pnpm 的 git 子目录语法安装。
 
 ## 插件清单
-
-### 📊 状态监控类
 
 | 插件 | 功能 | 安装命令 |
 |------|------|----------|
 | [dsh-balance](packages/dsh-balance) | 会话头部余额芯片：DeepSeek + OpenRouter 双账户（3 分钟自动刷新，悬停看两家明细） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-balance` |
 | [dsh-opencode-go](packages/dsh-opencode-go) | 会话头部 OpenCode GO 双账号用量芯片（滚动 5h/周/月 三窗口） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-opencode-go` |
-| [dsh-conversation-cost](packages/dsh-conversation-cost) | 对话底部实时显示本轮/总会话额度费用（GO 美元估算 + DeepSeek 人民币） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-conversation-cost` |
-| [dsh-opencode-go-pricing](packages/dsh-opencode-go-pricing) | 与 models.dev 同步 OpenCode GO 模型显示名（2x-usage 标记） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-opencode-go-pricing` |
 
-### ⚡ 效率增强类
+## 客户端依赖对齐（0.1.2-rc.1）
 
-| 插件 | 功能 | 安装命令 |
-|------|------|----------|
-| [dsh-task-notify](packages/dsh-task-notify) | 回复完成时弹 Windows 系统通知（页面失焦才弹，防打扰） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-task-notify` |
-| [dsh-skill-browser](packages/dsh-skill-browser) | 侧边栏技能浏览器：技能清单浮层 + 一键打开/更新 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-skill-browser` |
-| [dsh-codex-annotations](packages/dsh-codex-annotations) | Codex 风格选中文本批注：原文编号标记、悬停查看/编辑、输入框内注释计数徽章 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-codex-annotations` |
-| [dsh-open-file](packages/dsh-open-file) | 产物路径一体化：单击=话内预览（文本/markdown/图片/xlsx 表格），Ctrl+点击=系统默认应用打开，📂=文件管理器定位 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-open-file` |
+两个插件的 `@deepseek-ai/dsh-client-*` 依赖已与 DSH 客户端 `0.1.2-rc.1` 世代对齐：
 
-### 👁️ 视觉能力类
+| 依赖 | 声明版本 | 说明 |
+|------|----------|------|
+| `dsh-client-connection` / `dsh-client-locale` / `dsh-client-ui-conversation` / `dsh-credentials` / `dsh-launch-environment` | `0.1.2-rc.1` | 与桌面应用安装树内置版本一致 |
+| `dsh-client-runtime` / `dsh-client-ui-primitives` / `dsh-client-ui-slots` | `0.1.0-rc.6` | 应用安装树已不再内置这三个包，由应用的 `.dsh-module-fallback` 机制按 `0.1.0-rc.6` 提供；npm 上 `dsh-client-runtime` 也没有 `0.1.2-rc.1`，故保持与 fallback 一致 |
 
-| 插件 | 功能 | 安装命令 |
-|------|------|----------|
-| [dsh-vision-bridge](packages/dsh-vision-bridge) | 图片进模型前自动识图转文字（通义千问 qwen-vl-max），纯文本模型也能收图 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-vision-bridge` |
-
-### 🖥️ 虚拟桌面类
-
-| 插件 | 功能 | 安装命令 |
-|------|------|----------|
-| [dsh-virtual-desktop](packages/dsh-virtual-desktop) | 虚拟桌面 MVP（本机版）：网页内看本机屏幕、远程点击/输入/按键，隔离不抢屏为下一阶段 | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-virtual-desktop` |
+> ⚠️ 不要把这三个包强行升版本：`dsh-client-runtime@0.1.2-rc.1` 不存在（安装会直接失败），而更高版本的 primitives/slots 可能与 fallback 提供的 runtime 模块表对不上（`missed the module table`）。详见 [PITFALLS.md](PITFALLS.md)。
 
 ## 快速安装
 
-### 方式一：一键脚本（推荐，另一台电脑用）
+### 方式一：一键脚本
 
 ```powershell
 # 1. 下载脚本
@@ -48,11 +34,9 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/305037991x-pixel/dsh-p
 .\install-all.ps1
 ```
 
-脚本会逐条执行上表的 10 条安装命令，结束后提示重启 `dsh web` 并硬刷新（Ctrl+Shift+R）。
+脚本会逐条执行上表的 2 条安装命令，结束后提示重启 `dsh web` 并硬刷新（Ctrl+Shift+R）。
 
 ### 方式二：逐条安装
-
-每条命令格式统一：
 
 ```powershell
 dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/<插件名>
@@ -65,15 +49,15 @@ dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/<
 
 ### 日常更新流程（核心：源码改 → 一条命令发布）
 
-1. 在**源码目录**改代码（本机 DSH 通过 `link:` 直接使用源码，**改完本机立即生效**，无需重启）；
-2. 跑一键发布脚本，它会自动把 10 个源码目录同步进 `packages/`、清理本机痕迹、校验文件、扫描敏感信息、提交并推送：
+1. 在**源码目录**改代码（本机 DSH 通过 `link:` 直接使用 dsh-balance 源码，**改完本机立即生效**，无需重启）；
+2. 跑一键发布脚本，它会自动把源码目录同步进 `packages/`、清理本机痕迹、校验文件、扫描敏感信息、提交并推送：
 
 ```powershell
 .\publish-all.ps1 -Message "fix: xxx"
 ```
 
-> 源码目录映射见 `publish-all.ps1` 顶部 `$sources`；README/LICENSE/.gitignore 以仓库维护版为准（同步时不覆盖）。
-> 新增插件：把源码目录加进 `$sources` 和 `install-all.ps1` 清单即可。
+> 源码目录映射见 `publish-all.ps1` 顶部 `$sources`：dsh-balance 源码在本机 `~\.agents\skills-tools\dsh-balance`；dsh-opencode-go 源码在另一台电脑（`C:\Users\180458\...`），在那台机器之外直接改 `packages/dsh-opencode-go/` 即可。
+> README/LICENSE/.gitignore 以仓库维护版为准（同步时不覆盖）。
 
 ### 另一台电脑更新（已装过插件后升到新版）
 
@@ -106,7 +90,7 @@ pnpm --dir "$env:USERPROFILE\.dsh\profiles\web" update <插件名>
 |------|------|------|
 | Node.js | ≥ 22.19（建议 24.x） | DSH 运行环境 |
 | pnpm | ≥ 9（建议 11.x） | `dsh plugin` 内部转发给 pnpm 安装；`#path:` 子目录语法需 pnpm ≥ 9 |
-| DeepSeek Harness | 0.1.0-rc.6+ | `dsh` CLI / `dsh web` |
+| DeepSeek Harness | 0.1.2-rc.1 | `dsh` CLI / `dsh web`；client 依赖与 0.1.2-rc.1 世代对齐 |
 
 ## License
 

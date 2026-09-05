@@ -1,4 +1,0 @@
-# dsh-virtual-desktop bundle patch
-- insert:
-    - id: dsh-virtual-desktop
-      name: 'dsh-virtual-desktop'

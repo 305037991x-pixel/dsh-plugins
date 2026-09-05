@@ -24,17 +24,10 @@ $root = $PSScriptRoot
 
 # ── 源码目录映射（真源码 → 发布副本）───────────────────────────────
 # 修改源码后运行本脚本，packages/ 下的对应目录会被自动同步。
+# dsh-opencode-go 的源码在另一台电脑（180458）；在那台机器之外直接改 packages/dsh-opencode-go/。
 $sources = @{
     'dsh-balance'             = 'C:\Users\liang\.agents\skills-tools\dsh-balance'
     'dsh-opencode-go'         = 'C:\Users\180458\.agents\skills-tools\dsh-opencode-go'
-    'dsh-conversation-cost'   = 'D:\Deepseek\dsh-conversation-cost'
-    'dsh-opencode-go-pricing' = 'D:\Deepseek\dsh-opencode-go-pricing'
-    'dsh-task-notify'         = 'D:\Deepseek\dsh-task-notify'
-    'dsh-skill-browser'       = 'C:\Users\180458\.agents\skills-tools\dsh-skill-browser'
-    'dsh-vision-bridge'       = 'C:\Users\180458\.agents\skills-tools\dsh-vision-bridge'
-    'dsh-codex-annotations'   = 'C:\Users\180458\.agents\skills-tools\dsh-codex-annotations'
-    'dsh-open-file'           = 'D:\Deepseek\dsh-open-file'
-    'dsh-virtual-desktop'     = 'D:\Deepseek\dsh-virtual-desktop'
 }
 
 # ── 0. 前提检查 ───────────────────────────────────────────────────

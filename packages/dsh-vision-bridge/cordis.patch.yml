@@ -1,6 +1,0 @@
-# dsh-vision-bridge bundle patch
-#
-# 把本插件的行插入组合树：id 用于 Loader 去重/覆写，name 指向本包。
-- insert:
-    - id: dsh-vision-bridge
-      name: 'dsh-vision-bridge'
