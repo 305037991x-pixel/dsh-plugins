@@ -1,4 +1,4 @@
-# dsh-balance
+# dsh-account-balance
 
 > DeepSeek + OpenRouter 双账户余额芯片 · Dual account balance chip for DeepSeek Harness Web
 
@@ -20,7 +20,7 @@ A persistent **dual-account balance chip** in the conversation header: shows bot
 ## 安装 / Install
 
 ```bash
-dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-balance
+dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-account-balance
 ```
 
 重启 `dsh web` 并硬刷新页面（Ctrl+Shift+R）。
@@ -40,7 +40,7 @@ OPENROUTER1_API_KEY: sk-or-v1-xxx
 
 | 端 | 文件 | 职责 |
 |---|---|---|
-| Host | `lib/index.js` | 注册 `GET /dsh-balance`（DeepSeek）与 `GET /dsh-balance/openrouter`（OpenRouter）：各自从凭证服务（环境变量 → `$DSH_HOME/.credentials.yaml` → `.env`）解析密钥后调上游接口，响应原样透传 |
+| Host | `lib/index.js` | 注册 `GET /dsh-account-balance`（DeepSeek）与 `GET /dsh-account-balance/openrouter`（OpenRouter）：各自从凭证服务（环境变量 → `$DSH_HOME/.credentials.yaml` → `.env`）解析密钥后调上游接口，响应原样透传 |
 | Client | `lib/client.js` | 在 `conversation.session.header.utilities` 槽位注册芯片；模块级共享两家数据 + 3 分钟定时器 |
 
 余额数据来源：

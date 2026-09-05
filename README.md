@@ -8,8 +8,8 @@
 
 | 插件 | 功能 | 安装命令 |
 |------|------|----------|
-| [dsh-balance](packages/dsh-balance) | 会话头部余额芯片：DeepSeek + OpenRouter 双账户（3 分钟自动刷新，悬停看两家明细） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-balance` |
-| [dsh-opencode-go](packages/dsh-opencode-go) | 会话头部 OpenCode GO 双账号用量芯片（滚动 5h/周/月 三窗口） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-opencode-go` |
+| [dsh-account-balance](packages/dsh-account-balance) | 会话头部余额芯片：DeepSeek + OpenRouter 双账户（3 分钟自动刷新，悬停看两家明细） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-account-balance` |
+| [dsh-opencode-go](packages/dsh-opencode-go) | 会话头部用量芯片：OpenCode GO 双账号 + CommandCode（滚动 5h/周/月 三窗口） | `dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/dsh-opencode-go` |
 
 ## 客户端依赖对齐（0.1.2-rc.1）
 
@@ -49,14 +49,14 @@ dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/<
 
 ### 日常更新流程（核心：源码改 → 一条命令发布）
 
-1. 在**源码目录**改代码（本机 DSH 通过 `link:` 直接使用 dsh-balance 源码，**改完本机立即生效**，无需重启）；
+1. 在**源码目录**改代码（本机 DSH 通过 `link:` 直接使用 dsh-account-balance 源码，**改完本机立即生效**，无需重启）；
 2. 跑一键发布脚本，它会自动把源码目录同步进 `packages/`、清理本机痕迹、校验文件、扫描敏感信息、提交并推送：
 
 ```powershell
 .\publish-all.ps1 -Message "fix: xxx"
 ```
 
-> 源码目录映射见 `publish-all.ps1` 顶部 `$sources`：dsh-balance 源码在本机 `~\.agents\skills-tools\dsh-balance`；dsh-opencode-go 源码在另一台电脑（`C:\Users\180458\...`），在那台机器之外直接改 `packages/dsh-opencode-go/` 即可。
+> 源码目录映射见 `publish-all.ps1` 顶部 `$sources`：dsh-account-balance 源码在本机 `~\.agents\skills-tools\dsh-account-balance`；dsh-opencode-go 源码在另一台电脑（`C:\Users\180458\...`），在那台机器之外直接改 `packages/dsh-opencode-go/` 即可。
 > README/LICENSE/.gitignore 以仓库维护版为准（同步时不覆盖）。
 
 ### 另一台电脑更新（已装过插件后升到新版）

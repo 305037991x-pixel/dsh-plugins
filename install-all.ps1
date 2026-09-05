@@ -12,7 +12,7 @@ $ErrorActionPreference = 'Stop'
 
 # ── 插件清单（与仓库 README 保持一致）──────────────────────────────
 $plugins = @(
-    @{ Name = 'dsh-balance';              Desc = 'DeepSeek 余额芯片' },
+    @{ Name = 'dsh-account-balance';      Desc = 'DeepSeek 余额芯片' },
     @{ Name = 'dsh-opencode-go';          Desc = 'OpenCode GO 用量芯片' }
 )
 

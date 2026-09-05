@@ -1,7 +1,7 @@
 {
   "name": "dsh-opencode-go",
-  "version": "0.1.0",
-  "description": "Web 插件：在会话头部常驻显示 OpenCode GO 套餐用量（滚动 5h/每周/每月），3 分钟自动刷新",
+  "version": "0.2.0",
+  "description": "Web 插件：在会话头部常驻显示 OpenCode GO 双账号与 CommandCode 的套餐用量（滚动 5h/每周/每月），3 分钟自动刷新",
   "private": true,
   "type": "module",
   "main": "lib/index.js",

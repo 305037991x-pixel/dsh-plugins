@@ -1,8 +1,8 @@
-// dsh-balance — host half.
+// dsh-account-balance — host half.
 //
 // 提供两个余额路由：
-//   GET /dsh-balance            — DeepSeek 官方余额接口（api.deepseek.com/user/balance）
-//   GET /dsh-balance/openrouter — OpenRouter 额度接口（openrouter.ai/api/v1/credits）
+//   GET /dsh-account-balance            — DeepSeek 官方余额接口（api.deepseek.com/user/balance）
+//   GET /dsh-account-balance/openrouter — OpenRouter 额度接口（openrouter.ai/api/v1/credits）
 // 两家各自从凭证服务（环境变量 → $DSH_HOME/.credentials.yaml → .env）解析密钥：
 //   DEEPSEEK_API_KEY / OPENROUTER1_API_KEY。响应原样透传给浏览器；
 // 密钥只存在于宿主侧，绝不下发到浏览器。
@@ -10,7 +10,7 @@ import { credentialRef } from "@deepseek-ai/dsh-credentials";
 import { launchEnvironmentOf } from "@deepseek-ai/dsh-launch-environment";
 
 /** Stable Cordis plugin name. */
-const name = "dsh-balance";
+const name = "dsh-account-balance";
 /** Service required before the balance route can be claimed. */
 const inject = ["webServer"];
 
@@ -105,14 +105,14 @@ function apply(ctx) {
 	ctx.effect(() => {
 		ctx.webServer.register({
 			kind: "exact",
-			path: "/dsh-balance",
+			path: "/dsh-account-balance",
 			handler: balanceHandler(ctx, { url: BALANCE_URL, refName: "DEEPSEEK_API_KEY", label: "DeepSeek" })
 		});
 		ctx.webServer.register({
 			kind: "exact",
-			path: "/dsh-balance/openrouter",
+			path: "/dsh-account-balance/openrouter",
 			handler: balanceHandler(ctx, { url: OPENROUTER_CREDITS_URL, refName: "OPENROUTER1_API_KEY", label: "OpenRouter" })
 		});
-	}, "dsh-balance: balance routes");
+	}, "dsh-account-balance: balance routes");
 }
 export { BALANCE_URL, OPENROUTER_CREDITS_URL, apply, balanceHandler, inject, name, resolveApiKey, resolveCredential };

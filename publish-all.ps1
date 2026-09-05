@@ -26,7 +26,7 @@ $root = $PSScriptRoot
 # 修改源码后运行本脚本，packages/ 下的对应目录会被自动同步。
 # dsh-opencode-go 的源码在另一台电脑（180458）；在那台机器之外直接改 packages/dsh-opencode-go/。
 $sources = @{
-    'dsh-balance'             = 'C:\Users\liang\.agents\skills-tools\dsh-balance'
+    'dsh-account-balance'     = 'C:\Users\liang\.agents\skills-tools\dsh-account-balance'
     'dsh-opencode-go'         = 'C:\Users\180458\.agents\skills-tools\dsh-opencode-go'
 }
 

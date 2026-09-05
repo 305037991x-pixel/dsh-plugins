@@ -1,15 +1,15 @@
-// dsh-balance — browser half.
+// dsh-account-balance — browser half.
 //
 // 在会话头部（conversation.session.header.utilities）常驻一个「余额」芯片：
 // 同时显示 DeepSeek 与 OpenRouter 的可用余额，3 分钟自动刷新 + 手动刷新按钮；
 // 悬停气泡展示两家明细（DeepSeek：总余额/充值/赠送；OpenRouter：可用/充值/已用）。
-// 余额数据来自宿主侧路由 /dsh-balance（DeepSeek）与 /dsh-balance/openrouter
+// 余额数据来自宿主侧路由 /dsh-account-balance（DeepSeek）与 /dsh-account-balance/openrouter
 // （OpenRouter，密钥不出宿主机），接口详见 lib/index.js。
 //
 // 余额数据与 3 分钟定时器为模块级共享：切换会话时芯片组件随会话卸载/重挂载，
 // 但直接读取共享缓存，不重新拉取、不闪「查询中…」。
 window.__ModuleLoader__.load({
-	id: "dsh-balance",
+	id: "dsh-account-balance",
 	factory: (require) => {
 		var module = { exports: {} };
 		var exports = module.exports;
@@ -20,10 +20,10 @@ window.__ModuleLoader__.load({
 
 		//#region BalanceChip.module.css
 		const css = ".balanceChip_root{box-sizing:border-box;min-height:28px;color:var(--dsw-alias-label-secondary);background:0 0;border:none;border-radius:6px;align-items:center;gap:4px;padding:3px 6px;font-size:12px;line-height:18px;display:inline-flex}.balanceChip_root:hover{background:var(--dsw-alias-interactive-bg-hover)}.balanceChip_lead{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}.balanceChip_amount{min-width:0;color:var(--dsw-alias-label-primary);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:500}.balanceChip_loading{color:var(--dsw-alias-label-tertiary);white-space:nowrap}.balanceChip_errorText{color:var(--dsw-alias-state-error-primary);white-space:nowrap}.balanceChip_refresh{color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:4px;flex:none;align-items:center;justify-content:center;padding:1px;display:inline-flex}.balanceChip_refresh:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.balanceChip_refresh:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-1px}.balanceChip_sep{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}.balanceChip_spin{animation:.8s linear infinite balanceChip_spin}@keyframes balanceChip_spin{to{transform:rotate(360deg)}}";
-		const tagId = "dsh-balance/BalanceChip.module.css";
+		const tagId = "dsh-account-balance/BalanceChip.module.css";
 		if (typeof document !== "undefined" && document.querySelector("style[data-plugin-css=" + JSON.stringify(tagId) + "]") === null) {
 			const tag = document.createElement("style");
-			tag.dataset.plugin = "dsh-balance";
+			tag.dataset.plugin = "dsh-account-balance";
 			tag.dataset.pluginCss = tagId;
 			tag.textContent = css;
 			document.head.appendChild(tag);
@@ -41,7 +41,7 @@ window.__ModuleLoader__.load({
 		//#endregion
 
 		//#region locales
-		const NS = "dshBalance";
+		const NS = "dshAccountBalance";
 		const zh = {
 			"chip.label": "余额",
 			"chip.loading": "查询中…",
@@ -92,7 +92,7 @@ window.__ModuleLoader__.load({
 		/** 受支持的余额来源；顺序即芯片展示顺序。 */
 		const KINDS = ["deepseek", "openrouter"];
 		/** 各来源对应的宿主侧路由。 */
-		const ROUTES = { deepseek: "/dsh-balance", openrouter: "/dsh-balance/openrouter" };
+		const ROUTES = { deepseek: "/dsh-account-balance", openrouter: "/dsh-account-balance/openrouter" };
 		const providerState = () => ({ info: null, error: null, phase: "idle", fetching: null });
 		const shared = {
 			providers: { deepseek: providerState(), openrouter: providerState() },
@@ -115,7 +115,7 @@ window.__ModuleLoader__.load({
 				try {
 					listener();
 				} catch (error) {
-					console.error("[dsh-balance] store listener failed:", error);
+					console.error("[dsh-account-balance] store listener failed:", error);
 				}
 			}
 		};
@@ -286,10 +286,10 @@ window.__ModuleLoader__.load({
 			ctx.effect(() => ctx.locale.register(NS, {
 				zh,
 				en
-			}), "dsh-balance: dictionaries");
+			}), "dsh-account-balance: dictionaries");
 			ctx.slots.inject("conversation.session.header.utilities", () => ctx.slots.register({
 				name: "conversation.session.header.utilities",
-				id: "dsh-balance",
+				id: "dsh-account-balance",
 				order: 10,
 				locale: NS
 			}, BalanceChip));
