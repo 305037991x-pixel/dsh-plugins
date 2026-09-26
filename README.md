@@ -22,6 +22,8 @@
 
 > ⚠️ 不要把这三个包强行升版本：`dsh-client-runtime@0.1.2-rc.1` 不存在（安装会直接失败），而更高版本的 primitives/slots 可能与 fallback 提供的 runtime 模块表对不上（`missed the module table`）。详见 [PITFALLS.md](PITFALLS.md)。
 
+> ✅ **0.1.5-rc.2 兼容性实测（2026-09-26）**：在当前最新 harness core `0.1.5-rc.2` 上，`dsh-account-balance` v0.2.1 双余额路由与头部芯片挂载 / 3 分钟自动刷新 / 悬停明细均正常——依赖声明无需任何改动，fallback 机制照常生效。实况截图见 [packages/dsh-account-balance](packages/dsh-account-balance)。
+
 ## 快速安装
 
 ### 方式一：一键脚本
@@ -90,7 +92,7 @@ pnpm --dir "$env:USERPROFILE\.dsh\profiles\web" update <插件名>
 |------|------|------|
 | Node.js | ≥ 22.19（建议 24.x） | DSH 运行环境 |
 | pnpm | ≥ 9（建议 11.x） | `dsh plugin` 内部转发给 pnpm 安装；`#path:` 子目录语法需 pnpm ≥ 9 |
-| DeepSeek Harness | 0.1.2-rc.1 | `dsh` CLI / `dsh web`；client 依赖与 0.1.2-rc.1 世代对齐 |
+| DeepSeek Harness | ≥ 0.1.2-rc.1（已实测 0.1.5-rc.2） | `dsh` CLI / `dsh web`；client 依赖钉在 0.1.2-rc.1 世代，更新的核心由 `.dsh-module-fallback` 补齐三包，插件无需改依赖 |
 
 ## License
 

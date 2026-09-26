@@ -6,6 +6,19 @@
 
 A persistent **dual-account balance chip** in the conversation header: shows both DeepSeek and OpenRouter balances, auto-refreshes every 3 minutes, with per-account breakdowns on hover.
 
+![会话头部余额芯片实况](assets/balance-chip.png)
+
+▲ 会话头部实况：`¥ · $` 两段数字即本插件余额芯片（DeepSeek ¥ + OpenRouter $），悬停弹出双账户明细气泡；右侧「周 5%·-1.7%」用量芯片来自 [dsh-opencode-go](../dsh-opencode-go)。
+
+## 兼容性 / Compatibility
+
+| Harness 核心 | 状态 |
+|---|---|
+| 0.1.2-rc.1 | ✅ 发布基线（2026-09-05） |
+| 0.1.5-rc.2（当前最新） | ✅ 实测通过（2026-09-26）：两条余额路由 + 芯片挂载 / 自动刷新 / 悬停明细均正常 |
+
+> 0.1.5-rc.2 起，客户端三包（`dsh-client-runtime` / `dsh-client-ui-primitives` / `dsh-client-ui-slots`）不再随应用内置，由应用的 `.dsh-module-fallback` 机制按 `0.1.0-rc.6` 补齐——本插件依赖声明**保持不变**即可继续挂载；宿主侧 `dsh-credentials` / `dsh-launch-environment` 接口未变。这三个包的声明版本不要自行上调，原因见仓库根 [PITFALLS.md](../../PITFALLS.md) 与根 README「客户端依赖对齐」一节。
+
 ## 功能 / Features
 
 - 一枚芯片同时显示两家余额：`¥xx.xx · $xx.xx`（OpenRouter 可用余额 = 充值 − 已用）
