@@ -22,7 +22,9 @@
 
 > ⚠️ 不要把这三个包强行升版本：`dsh-client-runtime@0.1.2-rc.1` 不存在（安装会直接失败），而更高版本的 primitives/slots 可能与 fallback 提供的 runtime 模块表对不上（`missed the module table`）。详见 [PITFALLS.md](PITFALLS.md)。
 
-> ✅ **0.1.5-rc.2 兼容性实测（2026-09-26）**：在当前最新 harness core `0.1.5-rc.2` 上，`dsh-account-balance` v0.2.1 双余额路由与头部芯片挂载 / 3 分钟自动刷新 / 悬停明细均正常——依赖声明无需任何改动，fallback 机制照常生效。实况截图见 [packages/dsh-account-balance](packages/dsh-account-balance)。
+> ✅ **0.1.5-rc.2 兼容性实测（2026-09-26）**：在 harness core `0.1.5-rc.2` 上，`dsh-account-balance` v0.2.1 双余额路由与头部芯片挂载 / 3 分钟自动刷新 / 悬停明细均正常——依赖声明无需任何改动，fallback 机制照常生效。实况截图见 [packages/dsh-account-balance](packages/dsh-account-balance)。
+
+> ✅ **0.1.7-rc.2 兼容性核查（2026-09-26，v0.2.2）**：对 npm `next` 通道最新 `0.1.7-rc.2` 的发布产物静态核查通过——宿主 `credentialRef` / `launchEnvironmentOf` / `webServer.register` 契约不变，前端 seed 内置 `ui-primitives` / `ui-slots`，`conversation.session.header.utilities` 槽位保留；平台侧 **`dsh-client-runtime` 已退场**（0.1.5 的 `.dsh-module-fallback` 磁盘投影同步废除，改由前端 bundle 内置所需模块）。`dsh-account-balance` v0.2.2 起不再 inject / 依赖 `dsh-client-runtime`（代码本就未 require 它，新旧加载器均兼容）；`dsh-opencode-go` 仍声明该包，升级 0.1.7 前建议做同样清理（0.1.7 加载器对 inject 缺失项静默跳过，不清也不报错）。
 
 ## 快速安装
 
@@ -92,7 +94,7 @@ pnpm --dir "$env:USERPROFILE\.dsh\profiles\web" update <插件名>
 |------|------|------|
 | Node.js | ≥ 22.19（建议 24.x） | DSH 运行环境 |
 | pnpm | ≥ 9（建议 11.x） | `dsh plugin` 内部转发给 pnpm 安装；`#path:` 子目录语法需 pnpm ≥ 9 |
-| DeepSeek Harness | ≥ 0.1.2-rc.1（已实测 0.1.5-rc.2） | `dsh` CLI / `dsh web`；client 依赖钉在 0.1.2-rc.1 世代，更新的核心由 `.dsh-module-fallback` 补齐三包，插件无需改依赖 |
+| DeepSeek Harness | ≥ 0.1.2-rc.1（实测 0.1.5-rc.2，核查 0.1.7-rc.2） | `dsh` CLI / `dsh web`；client 依赖钉在 0.1.2-rc.1 世代，0.1.5 由 `.dsh-module-fallback` 补齐三包，0.1.7 起由前端 seed 内置，插件无需改依赖 |
 
 ## License
 
