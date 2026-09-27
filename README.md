@@ -24,7 +24,7 @@
 
 > ✅ **0.1.5-rc.2 兼容性实测（2026-09-26）**：在 harness core `0.1.5-rc.2` 上，`dsh-account-balance` v0.2.1 双余额路由与头部芯片挂载 / 3 分钟自动刷新 / 悬停明细均正常——依赖声明无需任何改动，fallback 机制照常生效。实况截图见 [packages/dsh-account-balance](packages/dsh-account-balance)。
 
-> ✅ **0.1.7-rc.2 兼容性核查（2026-09-26，v0.2.2）**：对 npm `next` 通道最新 `0.1.7-rc.2` 的发布产物静态核查通过——宿主 `credentialRef` / `launchEnvironmentOf` / `webServer.register` 契约不变，前端 seed 内置 `ui-primitives` / `ui-slots`，`conversation.session.header.utilities` 槽位保留；平台侧 **`dsh-client-runtime` 已退场**（0.1.5 的 `.dsh-module-fallback` 磁盘投影同步废除，改由前端 bundle 内置所需模块）。`dsh-account-balance` v0.2.2 起不再 inject / 依赖 `dsh-client-runtime`（代码本就未 require 它，新旧加载器均兼容）；`dsh-opencode-go` 仍声明该包，升级 0.1.7 前建议做同样清理（0.1.7 加载器对 inject 缺失项静默跳过，不清也不报错）。
+> ✅ **0.1.7-rc.2 兼容性核查（2026-09-26，v0.2.2）**：对 npm `next` 通道最新 `0.1.7-rc.2` 的发布产物静态核查通过——宿主 `credentialRef` / `launchEnvironmentOf` / `webServer.register` 契约不变，前端 seed 内置 `ui-primitives` / `ui-slots`，`conversation.session.header.utilities` 槽位保留；平台侧 **`dsh-client-runtime` 已退场**（0.1.5 的 `.dsh-module-fallback` 磁盘投影同步废除，改由前端 bundle 内置所需模块）。两个插件均已移除对 `dsh-client-runtime` 的 inject / 依赖声明（`dsh-account-balance` v0.2.2、`dsh-opencode-go` v0.2.1；代码本就未 require 它，新旧加载器均兼容）。
 
 ## 快速安装
 
