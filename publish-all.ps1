@@ -25,8 +25,7 @@ $root = $PSScriptRoot
 # ── 源码目录映射（真源码 → 发布副本）───────────────────────────────
 # 修改源码后运行本脚本，packages/ 下的对应目录会被自动同步。
 # 两个插件的源码都在本机 C:\Users\180458\.agents\skills-tools\ 下；不要直接改 packages/ 下的副本。
-# 注意：源码目录写错时脚本只会打印「源码目录不存在，跳过」并继续，packages/ 会静默保持旧内容——
-# 改完源码后请确认同步输出里两个插件都显示「已同步」。
+# 注意：源码目录写错时脚本会直接失败（不会静默跳过），packages/ 不会被发布成旧版本。
 $sources = @{
     'dsh-account-balance'     = 'C:\Users\180458\.agents\skills-tools\dsh-account-balance'
     'dsh-opencode-go'         = 'C:\Users\180458\.agents\skills-tools\dsh-opencode-go'
@@ -57,16 +56,19 @@ if (-not $SkipSync) {
         $srcDir = $sources[$pkg]
         $dstDir = Join-Path $root "packages\$pkg"
         if (-not (Test-Path $srcDir)) {
-            Write-Host "  ⚠ 源码目录不存在，跳过：$srcDir" -ForegroundColor DarkGray
-            continue
+            # 源码目录不存在必须硬失败：静默跳过会让 packages/ 保持旧内容，
+            # 发布出去的还是上一版插件，而仓库看起来一切正常。
+            Write-Host "  ✗ 源码目录不存在：$srcDir" -ForegroundColor Red
+            Write-Host "    请修正 publish-all.ps1 里的 `$sources 映射（不要退而直接改 packages/）。" -ForegroundColor Red
+            exit 1
         }
         New-Item -ItemType Directory -Force -Path $dstDir | Out-Null
         # robocopy 参数说明：
         #   /E     复制子目录（含空目录）
         #   /XD    排除依赖与 git 元数据
-        #   /XF    排除本机专属/日志/临时文件；README/LICENSE/.gitignore 以仓库维护版为准，不覆盖
+        #   /XF    排除本机专属/日志/临时/备份文件；README 与 LICENSE 必须同步（发布出去的用法要跟源码一致）
         #   /NFL /NDL /NJH /NJS /NC /NS  精简输出
-        $rob = robocopy $srcDir $dstDir /E /XD node_modules .git /XF *.log verify-*.mjs tmp-*.mjs probe-*.ps1 restart-web.ps1 pnpm-lock.yaml pnpm-workspace.yaml README.md LICENSE .gitignore /NFL /NDL /NJH /NJS /NC /NS
+        $rob = robocopy $srcDir $dstDir /E /XD node_modules .git /XF *.log *.bak *.bak-* verify-*.mjs tmp-*.mjs probe-*.ps1 restart-web.ps1 pnpm-lock.yaml pnpm-workspace.yaml .gitignore /NFL /NDL /NJH /NJS /NC /NS
         # robocopy 退出码 <8 均算成功（1=有复制，0=无变化）
         if ($LASTEXITCODE -lt 8) {
             $syncLog += "$pkg (rc=$LASTEXITCODE)"
@@ -86,7 +88,7 @@ Get-ChildItem "$root\packages" -Directory | ForEach-Object {
     $pkg = $_.Name
     # 删除本机专属文件（保持仓库干净）
     Get-ChildItem $_.FullName -Recurse -File -Force -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -match '^(verify|tmp|probe)-|\.log$|^web\.(stdout|stderr)\.log$|^restart-web\.ps1$' } |
+        Where-Object { $_.Name -match '^(verify|tmp|probe)-|\.log$|^web\.(stdout|stderr)\.log$|^restart-web\.ps1$|\.bak(-\S*)?$' } |
         ForEach-Object { Remove-Item $_.FullName -Force; Write-Host "  🧹 ${pkg}: 移除 $($_.Name)" -ForegroundColor DarkGray }
     # 校验必备文件
     foreach ($f in 'package.json', 'README.md', 'LICENSE', 'lib') {

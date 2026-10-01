@@ -17,6 +17,9 @@ A persistent **dual-account balance chip** in the conversation header: shows bot
 | 0.1.2-rc.1 | ✅ 发布基线（2026-09-05） |
 | 0.1.5-rc.2 | ✅ 实测通过（2026-09-26）：两条余额路由 + 芯片挂载 / 自动刷新 / 悬停明细均正常 |
 | 0.1.7-rc.2（npm `next` 通道最新） | ✅ 核查通过（2026-09-26，v0.2.2，静态比对发布产物）：宿主 `credentialRef` / `launchEnvironmentOf` / `webServer.register({kind,path,handler})` 契约不变；前端 seed 内置 `ui-primitives` / `ui-slots` / `react`；`conversation.session.header.utilities` 槽位保留 |
+| 0.2.0-rc.1（`ui-primitives` 0.2.0-rc.2） | ✅ 实测通过（2026-10-01，v0.2.3）：宿主两条路由正常；芯片挂载 / 自动刷新 / 悬停明细均正常。**注意 0.2.0 图标导出为破坏性变更**，见下方 |
+
+> **0.2.0 图标导出破坏性变更（2026-10-01 踩坑）**：`@deepseek-ai/dsh-client-ui-primitives` 在 0.2.0-rc.2 把图标导出名从「图标名 + 尺寸」（`IconApiOutline14`）改为「图标名 + 字重」（`IconApiOutlineRegular` / `IconApiOutlineMedium`），尺寸改由 `size` prop 传入，旧名取到 `undefined`。`jsx(undefined, …)` 触发 React error #130，导致**整个 `conversation.session.header.utilities` 槽位条目崩溃、芯片完全不渲染**——不是只少一个图标。本插件 v0.2.3 起在 `lib/client.js` 顶部加了 `pickIcon(defaultSize, …names)` 兼容层：按「新 Regular → 新 Medium → 旧名」依次回退，全落空时返回内联 SVG 占位，**绝不返回 undefined**，因此同时兼容新旧两套图标名。宿主契约（`ctx.slots.inject` / `ctx.slots.register` / `ctx.locale.register` / `--dsw-alias-*` CSS 变量）在 0.2.0-rc.1 下均未变化。
 
 > 客户端模块供给机制在 0.1.5 → 0.1.7 间有变化：0.1.5 由应用把 bundle 内置包投影到 profile 的 `.dsh-module-fallback/` 目录供给；0.1.7 起磁盘投影被移除，`ui-primitives` / `ui-slots` 改为前端 bundle 内置（platform seed），而 **`dsh-client-runtime` 平台侧整体退场**。本插件 v0.2.2 起不再 inject / 依赖 `dsh-client-runtime`（代码本就未 require 它，0.1.5 与 0.1.7 加载器下行为一致）。其余依赖版本**不要**自行上调，原因见仓库根 [PITFALLS.md](../../PITFALLS.md) 与根 README「客户端依赖对齐」一节。
 
