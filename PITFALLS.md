@@ -111,6 +111,16 @@
 - **排查口诀**：芯片不见了先看控制台有没有 `slot entry crashed in '<槽位名>'`——那说明是组件渲染崩了（多为 `undefined` 组件 / 导出改名），不是数据为空；`Require <x> is not a function` 那类才是 API 签名变更。
 - **核对导出名的方法**：`node_modules/@deepseek-ai/dsh-client-ui-primitives/lib/index.js` 里那一条巨大的 `export { … }` 就是完整导出表（`Select-String -Pattern 'IconApiOutline'` 之类精确匹配，不要对整个 node_modules 做宽泛 grep）。另外新包图标默认 `size`：api=14，refresh/warning=16，`ICON_REGULAR_STROKE=1`、`ICON_MEDIUM_STROKE=1.3`。
 
+### 19. 发布脚本里源码路径写错 → GitHub 上的副本一直是旧的（2026-10-01）
+
+- **现象**：`publish-all.ps1` 的 `$sources` 里 `dsh-account-balance` 映射到 `C:\Users\liang\...`（本机不存在），脚本只打印 `⚠ 源码目录不存在，跳过` 就继续，`git add -A` 照样提交 + push 成功。**仓库看起来一切正常，发布出去的却永远是上一版**。真源码改了半个月，GitHub 上一个字没变。
+- **同类静默失败**：robocopy 的 `/XF` 里写了 `README.md LICENSE`，于是改源码 README（兼容性表、用法）永远不会同步到 `packages/`——发布出去的用法说明与实际代码不符。
+- **解法（三条一起）**：
+  1. 源码目录不存在 → `exit 1` 硬失败，不许静默 `continue`；
+  2. `/XF` 不再排除 `README.md` / `LICENSE`（只有 `.gitignore` 保留排除）；`*.bak` / `*.bak-*` 加入排除，避免本地备份混进公开包；
+  3. 清理步骤的正则加上 `\.bak(-\S*)?$`，把历史上已提交的备份文件清掉。
+- **教训**：同步/发布脚本里任何「拿不到就跳过」的分支都是隐患——发布链路必须 fail loud。改完源码后先看同步输出里每个插件都显示「已同步」，再跑发布。
+
 ---
 
 维护说明：本文件与仓库代码同版本演进，新增踩坑直接在此追加并注明日期。
