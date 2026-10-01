@@ -1,7 +1,7 @@
 // dsh-opencode-go — host half.
 //
-// 提供 `GET /dsh-opencode-go/usage` 路由，并行查询三类账号的套餐用量：
-// - OpenCode GO 账号 A/B（OPENCODE_GO_API_KEY / OPENCODE_GO_API_KEY_B）：
+// 提供 `GET /dsh-opencode-go/usage` 路由，并行查询两类账号的套餐用量：
+// - OpenCode GO 账号（OPENCODEGO_API_KEY，与 llm-pi-ai 的 opencode-go 路由同 key）：
 //   调官方用量接口 `https://opencode.ai/zen/go/v1/usage`；
 // - CommandCode 账号（COMMANDCODE_API_KEY）：调官方 CLI `/usage` 命令同款
 //   `https://api.commandcode.ai/alpha/billing/credits`（5h/周窗口）+
@@ -25,8 +25,7 @@ const USAGE_TIMEOUT_MS = 15000;
 
 /** 账号清单：kind 决定用量接口，credential 是凭证引用名。 */
 const ACCOUNTS = [
-	{ id: "A", kind: "opencode", credential: "OPENCODE_GO_API_KEY", label: "账号 A" },
-	{ id: "B", kind: "opencode", credential: "OPENCODE_GO_API_KEY_B", label: "账号 B" },
+	{ id: "A", kind: "opencode", credential: "OPENCODEGO_API_KEY", label: "账号 A" },
 	{ id: "CMD", kind: "commandcode", credential: "COMMANDCODE_API_KEY", label: "CommandCode" }
 ];
 

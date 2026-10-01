@@ -24,9 +24,11 @@ $root = $PSScriptRoot
 
 # ── 源码目录映射（真源码 → 发布副本）───────────────────────────────
 # 修改源码后运行本脚本，packages/ 下的对应目录会被自动同步。
-# dsh-opencode-go 的源码在另一台电脑（180458）；在那台机器之外直接改 packages/dsh-opencode-go/。
+# 两个插件的源码都在本机 C:\Users\180458\.agents\skills-tools\ 下；不要直接改 packages/ 下的副本。
+# 注意：源码目录写错时脚本只会打印「源码目录不存在，跳过」并继续，packages/ 会静默保持旧内容——
+# 改完源码后请确认同步输出里两个插件都显示「已同步」。
 $sources = @{
-    'dsh-account-balance'     = 'C:\Users\liang\.agents\skills-tools\dsh-account-balance'
+    'dsh-account-balance'     = 'C:\Users\180458\.agents\skills-tools\dsh-account-balance'
     'dsh-opencode-go'         = 'C:\Users\180458\.agents\skills-tools\dsh-opencode-go'
 }
 

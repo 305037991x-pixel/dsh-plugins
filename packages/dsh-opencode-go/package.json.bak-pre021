@@ -1,7 +1,7 @@
 {
-  "name": "dsh-account-balance",
-  "version": "0.2.3",
-  "description": "Web 插件：在会话头部常驻显示 DeepSeek + OpenRouter 双账户余额，支持手动/自动刷新",
+  "name": "dsh-opencode-go",
+  "version": "0.2.0",
+  "description": "Web 插件：在会话头部常驻显示 OpenCode GO 双账号与 CommandCode 的套餐用量（滚动 5h/每周/每月），3 分钟自动刷新",
   "private": true,
   "type": "module",
   "main": "lib/index.js",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@deepseek-ai/dsh-client-connection": "0.1.2-rc.1",
     "@deepseek-ai/dsh-client-locale": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.6",
     "@deepseek-ai/dsh-client-ui-conversation": "0.1.2-rc.1",
     "@deepseek-ai/dsh-client-ui-primitives": "0.1.0-rc.6",
     "@deepseek-ai/dsh-client-ui-slots": "0.1.0-rc.6",
@@ -31,6 +32,7 @@
     },
     "client": {
       "inject": [
+        "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-client-locale",
         "@deepseek-ai/dsh-client-connection",
         "@deepseek-ai/dsh-client-ui-slots",

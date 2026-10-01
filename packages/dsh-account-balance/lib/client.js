@@ -18,6 +18,34 @@ window.__ModuleLoader__.load({
 		let react = require("react");
 		let primitives = require("@deepseek-ai/dsh-client-ui-primitives");
 
+		// ── 图标兼容层 ──────────────────────────────────────────────
+		// DSH 0.2.0 起，dsh-client-ui-primitives 的图标导出名由「图标名 + 尺寸」
+		// （IconApiOutline14）改为「图标名 + 字重」（IconApiOutlineRegular/Medium），
+		// 尺寸改由 size prop 传入。旧名在新版里取到 undefined，交给 React 会抛
+		// error #130（元素类型非法），导致整个 conversation.session.header.utilities
+		// 槽位条目崩溃 —— 芯片完全不渲染，而不是只少一个图标。
+		// 兼容层按 新Regular → 新Medium → 旧名 依次回退；全落空则返回内联 SVG 占位，
+		// 绝不返回 undefined。
+		const pickIcon = (defaultSize, ...names) => {
+			for (const name of names) {
+				if (typeof primitives[name] === "function") return primitives[name];
+			}
+			return (props) => react_jsx_runtime.jsx("svg", {
+				width: (props && props.size) || defaultSize,
+				height: (props && props.size) || defaultSize,
+				viewBox: "0 0 16 16",
+				fill: "none",
+				stroke: "currentColor",
+				strokeWidth: 1,
+				"aria-hidden": "true",
+				className: props && props.className,
+				children: react_jsx_runtime.jsx("circle", { cx: "8", cy: "8", r: "5.5" })
+			});
+		};
+		const IconApiOutline = pickIcon(14, "IconApiOutlineRegular", "IconApiOutlineMedium", "IconApiOutline14");
+		const IconRefreshOutline = pickIcon(14, "IconRefreshOutlineRegular", "IconRefreshOutlineMedium", "IconRefreshOutline14");
+		const IconWarningOutline = pickIcon(14, "IconWarningOutlineRegular", "IconWarningOutlineMedium", "IconWarningOutline16");
+
 		//#region BalanceChip.module.css
 		const css = ".balanceChip_root{box-sizing:border-box;min-height:28px;color:var(--dsw-alias-label-secondary);background:0 0;border:none;border-radius:6px;align-items:center;gap:4px;padding:3px 6px;font-size:12px;line-height:18px;display:inline-flex}.balanceChip_root:hover{background:var(--dsw-alias-interactive-bg-hover)}.balanceChip_lead{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}.balanceChip_amount{min-width:0;color:var(--dsw-alias-label-primary);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:500}.balanceChip_loading{color:var(--dsw-alias-label-tertiary);white-space:nowrap}.balanceChip_errorText{color:var(--dsw-alias-state-error-primary);white-space:nowrap}.balanceChip_refresh{color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:4px;flex:none;align-items:center;justify-content:center;padding:1px;display:inline-flex}.balanceChip_refresh:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.balanceChip_refresh:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-1px}.balanceChip_sep{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}.balanceChip_spin{animation:.8s linear infinite balanceChip_spin}@keyframes balanceChip_spin{to{transform:rotate(360deg)}}";
 		const tagId = "dsh-account-balance/BalanceChip.module.css";
@@ -209,7 +237,7 @@ window.__ModuleLoader__.load({
 						text,
 						node: react_jsx_runtime.jsx("span", {
 							className: cssMap.errorText,
-							children: [react_jsx_runtime.jsx(primitives.IconWarningOutline16, { size: 14 }, "icon"), " ", text]
+							children: [react_jsx_runtime.jsx(IconWarningOutline, { size: 14 }, "icon"), " ", text]
 						}, kind)
 					});
 				}
@@ -246,10 +274,11 @@ window.__ModuleLoader__.load({
 				className: cssMap.root,
 				"data-balance-chip": "",
 				"aria-label": `${t("chip.label")}: ${parts.length > 0 ? ariaText : t("chip.loading")}`,
+				title: primitives.Tooltip === void 0 && breakdown !== "" ? breakdown : void 0,
 				children: [
 					react_jsx_runtime.jsx("span", {
 						className: cssMap.lead,
-						children: react_jsx_runtime.jsx(primitives.IconApiOutline14, { size: 14 })
+						children: react_jsx_runtime.jsx(IconApiOutline, { size: 14 })
 					}, "lead"),
 					...(parts.length > 0
 						? inner
@@ -260,7 +289,7 @@ window.__ModuleLoader__.load({
 						"aria-label": t("chip.refresh"),
 						title: t("chip.refresh"),
 						onClick: () => fetchAll(),
-						children: react_jsx_runtime.jsx(primitives.IconRefreshOutline14, {
+						children: react_jsx_runtime.jsx(IconRefreshOutline, {
 							size: 14,
 							className: refreshing ? cssMap.spin : void 0
 						})

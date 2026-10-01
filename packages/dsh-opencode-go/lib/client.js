@@ -1,7 +1,7 @@
 // dsh-opencode-go — browser half.
 //
 // 在会话头部（conversation.session.header.utilities，与 dsh-balance 同槽位）
-// 常驻一个「OpenCode GO」芯片：显示两个账号的周窗口用量百分比（红/橙/绿），
+// 常驻一个「OpenCode GO」芯片：显示各账号的周窗口用量百分比（红/橙/绿），
 // 3 分钟自动刷新 + 手动刷新按钮；悬停气泡分账号展示 滚动(5h)/周/月 用量
 // 与滚动窗口剩余时间。数据来自宿主侧路由 /dsh-opencode-go/usage
 // （密钥不出宿主机），接口详见 lib/index.js。
@@ -17,6 +17,34 @@ window.__ModuleLoader__.load({
 		let react_jsx_runtime = require("react/jsx-runtime");
 		let react = require("react");
 		let primitives = require("@deepseek-ai/dsh-client-ui-primitives");
+
+		// ── 图标兼容层 ──────────────────────────────────────────────
+		// DSH 0.2.0 起，dsh-client-ui-primitives 的图标导出名由「图标名 + 尺寸」
+		// （IconApiOutline14）改为「图标名 + 字重」（IconApiOutlineRegular/Medium），
+		// 尺寸改由 size prop 传入。旧名在新版里取到 undefined，交给 React 会抛
+		// error #130（元素类型非法），导致整个 conversation.session.header.utilities
+		// 槽位条目崩溃 —— 芯片完全不渲染，而不是只少一个图标。
+		// 兼容层按 新Regular → 新Medium → 旧名 依次回退；全落空则返回内联 SVG 占位，
+		// 绝不返回 undefined。
+		const pickIcon = (defaultSize, ...names) => {
+			for (const name of names) {
+				if (typeof primitives[name] === "function") return primitives[name];
+			}
+			return (props) => react_jsx_runtime.jsx("svg", {
+				width: (props && props.size) || defaultSize,
+				height: (props && props.size) || defaultSize,
+				viewBox: "0 0 16 16",
+				fill: "none",
+				stroke: "currentColor",
+				strokeWidth: 1,
+				"aria-hidden": "true",
+				className: props && props.className,
+				children: react_jsx_runtime.jsx("circle", { cx: "8", cy: "8", r: "5.5" })
+			});
+		};
+		const IconApiOutline = pickIcon(14, "IconApiOutlineRegular", "IconApiOutlineMedium", "IconApiOutline14");
+		const IconRefreshOutline = pickIcon(14, "IconRefreshOutlineRegular", "IconRefreshOutlineMedium", "IconRefreshOutline14");
+		const IconWarningOutline = pickIcon(14, "IconWarningOutlineRegular", "IconWarningOutlineMedium", "IconWarningOutline16");
 
 		//#region GoUsageChip.module.css
 		const css = ".goChip_root{box-sizing:border-box;min-height:28px;color:var(--dsw-alias-label-secondary);background:0 0;border:none;border-radius:6px;align-items:center;gap:4px;padding:3px 6px;font-size:12px;line-height:18px;display:inline-flex}.goChip_root:hover{background:var(--dsw-alias-interactive-bg-hover)}.goChip_lead{color:var(--dsw-alias-label-tertiary);flex:none;display:inline-flex}.goChip_amount{min-width:0;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:500}.goChip_ok{color:var(--dsw-alias-state-success-primary)}.goChip_warn{color:var(--dsw-alias-state-warn-primary)}.goChip_danger{color:var(--dsw-alias-state-error-primary)}.goChip_loading{color:var(--dsw-alias-label-tertiary);white-space:nowrap}.goChip_errorText{color:var(--dsw-alias-state-error-primary);white-space:nowrap}.goChip_refresh{color:var(--dsw-alias-label-tertiary);cursor:pointer;background:0 0;border:none;border-radius:4px;flex:none;align-items:center;justify-content:center;padding:1px;display:inline-flex}.goChip_refresh:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}.goChip_refresh:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-1px}.goChip_spin{animation:.8s linear infinite goChip_spin}@keyframes goChip_spin{to{transform:rotate(360deg)}}.goChip_tooltip{display:flex;flex-direction:column;gap:4px}.goChip_tooltipLine{white-space:nowrap}";
@@ -152,7 +180,7 @@ window.__ModuleLoader__.load({
 				}
 			}
 		};
-		/** 拉取一次用量（两个账号）；并发去重（同一时刻只发一个请求）。 */
+		/** 拉取一次用量（各账号）；并发去重（同一时刻只发一个请求）。 */
 		const fetchUsage = () => {
 			if (shared.fetching !== null) return shared.fetching;
 			shared.fetching = (async () => {
@@ -191,7 +219,7 @@ window.__ModuleLoader__.load({
 
 		//#region GoUsageChip
 		/**
-		 * 会话头部 OpenCode GO 用量芯片：显示两个账号的周窗口百分比（红/橙/绿），
+		 * 会话头部 OpenCode GO 用量芯片：显示各账号的周窗口百分比（红/橙/绿），
 		 * 3 分钟自动刷新，手动刷新按钮 + 悬停分账号明细气泡。
 		 * 数据读模块级共享缓存：切换会话重挂载时直接展示，不重新拉取。
 		 * @param props - 标准 slot props（t 为注册 locale 的翻译器）。
@@ -215,7 +243,7 @@ window.__ModuleLoader__.load({
 			const okAccounts = (accounts || []).filter((a) => a && a.ok && a.usage);
 			const hasData = okAccounts.length > 0;
 
-			// 芯片：两个账号的周用量百分比，各自着色，用 · 连接
+			// 芯片：各账号的周用量百分比，各自着色，用 · 连接
 			let content;
 			if (hasData) {
 				const weeklyParts = okAccounts.map((a) => {
@@ -237,7 +265,7 @@ window.__ModuleLoader__.load({
 			} else if (phase === "error" && !hasData) {
 				content = react_jsx_runtime.jsx("span", {
 					className: cssMap.errorText,
-					children: [react_jsx_runtime.jsx(primitives.IconWarningOutline16, { size: 14 }), " ", t("chip.error")]
+					children: [react_jsx_runtime.jsx(IconWarningOutline, { size: 14 }), " ", t("chip.error")]
 				});
 			} else {
 				content = react_jsx_runtime.jsx("span", { className: cssMap.loading, children: t("chip.loading") });
@@ -268,14 +296,18 @@ window.__ModuleLoader__.load({
 				})
 				: "";
 
+			// Tooltip 缺失时降级到原生 title 的纯文本明细
+			const breakdownText = sections.join("\n");
+
 			const anchor = react_jsx_runtime.jsx("span", {
 				className: cssMap.root,
 				"data-opencode-go-chip": "",
+				title: primitives.Tooltip === void 0 && breakdownText !== "" ? breakdownText : void 0,
 				"aria-label": `${t("chip.label")}: ${hasData ? t("chip.weeklyLabel") + " " + okAccounts.map((a) => { const w = pickWindow(a.usage, "weekly"); return w && w.percent !== null ? `${w.percent}%` : "–"; }).join("·") : t("chip.loading")}`,
 				children: [
 					react_jsx_runtime.jsx("span", {
 						className: cssMap.lead,
-						children: react_jsx_runtime.jsx(primitives.IconApiOutline14, { size: 14 })
+						children: react_jsx_runtime.jsx(IconApiOutline, { size: 14 })
 					}),
 					content,
 					react_jsx_runtime.jsx("button", {
@@ -284,7 +316,7 @@ window.__ModuleLoader__.load({
 						"aria-label": t("chip.refresh"),
 						title: t("chip.refresh"),
 						onClick: () => void fetchUsage(),
-						children: react_jsx_runtime.jsx(primitives.IconRefreshOutline14, {
+						children: react_jsx_runtime.jsx(IconRefreshOutline, {
 							size: 14,
 							className: refreshing ? cssMap.spin : void 0
 						})

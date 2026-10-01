@@ -100,6 +100,17 @@
 
 - OpenCode GO 首页横幅 "DeepSeek V4 Flash gets 2× usage limits" = 该模型**用量上限翻倍**（限额分母×2，与消耗×0.5 数学等价），更便宜。官方出处：opencode.ai/docs/go 计价表。
 
+### 18. DSH 0.2.0 图标导出改名 → 整个槽位崩溃，不是只少个图标（2026-10-01）
+
+- **现象**：升级到 Harness 核心 `0.2.0-rc.1` 后，`dsh-account-balance` 与 `dsh-opencode-go` 的会话头部芯片**整个消失**，控制台刷：
+  `Minified React error #130` + `slot entry crashed in 'conversation.session.header.utilities'`。宿主路由 `/dsh-account-balance`、`/dsh-opencode-go/usage` 全部 HTTP 200 正常返回数据——看起来像数据问题，实际是渲染问题。
+- **根因**：`@deepseek-ai/dsh-client-ui-primitives` 在 `0.2.0-rc.2` 把图标导出名从「图标名 + 尺寸」改成「图标名 + 字重」，尺寸改由 `size` prop 传入：
+  `IconApiOutline14` → `IconApiOutlineRegular` / `IconApiOutlineMedium`（同理 `IconRefreshOutline*`、`IconWarningOutline*`），旧名连裸名 `IconApiOutline` 都不存在。
+- **放大机制（重点）**：`require()` 拿到 `undefined` → `jsx(undefined, …)` → React error #130「元素类型非法」→ **整个 `conversation.session.header.utilities` 槽位条目被判崩溃并剔除**。也就是说一个缺失图标会让整个芯片组件挂掉，而不只是少个图标。
+- **解法**：在 `lib/client.js` 顶部（`require("@deepseek-ai/dsh-client-ui-primitives")` 之后）加 `pickIcon` 兼容层，按「新 Regular → 新 Medium → 旧名」依次回退，全落空返回内联 SVG 占位，**绝不返回 undefined**。同时 `Tooltip` 也要判空并降级到原生 `title`。
+- **排查口诀**：芯片不见了先看控制台有没有 `slot entry crashed in '<槽位名>'`——那说明是组件渲染崩了（多为 `undefined` 组件 / 导出改名），不是数据为空；`Require <x> is not a function` 那类才是 API 签名变更。
+- **核对导出名的方法**：`node_modules/@deepseek-ai/dsh-client-ui-primitives/lib/index.js` 里那一条巨大的 `export { … }` 就是完整导出表（`Select-String -Pattern 'IconApiOutline'` 之类精确匹配，不要对整个 node_modules 做宽泛 grep）。另外新包图标默认 `size`：api=14，refresh/warning=16，`ICON_REGULAR_STROKE=1`、`ICON_MEDIUM_STROKE=1.3`。
+
 ---
 
 维护说明：本文件与仓库代码同版本演进，新增踩坑直接在此追加并注明日期。
