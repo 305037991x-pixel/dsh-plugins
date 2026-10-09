@@ -24,10 +24,12 @@ A persistent usage chip in the conversation header: watches one OpenCode GO acco
 
 > **0.2.0 图标导出破坏性变更（2026-10-01 踩坑）**：`@deepseek-ai/dsh-client-ui-primitives` 在 0.2.0-rc.2 把图标导出名从「图标名 + 尺寸」（`IconApiOutline14`）改为「图标名 + 字重」（`IconApiOutlineRegular` / `IconApiOutlineMedium`），尺寸改由 `size` prop 传入，旧名取到 `undefined`。`jsx(undefined, …)` 触发 React error #130，导致**整个 `conversation.session.header.utilities` 槽位条目崩溃、芯片完全不渲染**——不是只少一个图标。本插件 v0.2.2 起在 `lib/client.js` 顶部加了 `pickIcon(defaultSize, …names)` 兼容层：按「新 Regular → 新 Medium → 旧名」依次回退，全落空时返回内联 SVG 占位，**绝不返回 undefined**，因此同时兼容新旧两套图标名。宿主契约（`ctx.slots.inject` / `ctx.slots.register` / `ctx.locale.register` / `--dsw-alias-*` CSS 变量）在 0.2.0-rc.1 下均未变化。
 
+> **0.2.3（2026-10-09）**：修正 OpenCode GO 的凭证引用名 `OPENCODEGO_API_KEY` → `OPENCODE_GO_API_KEY`（与 `llm-pi-ai` 的 `opencode-go` 路由 `apiKeyEnv` 一致；旧名在配置了 `OPENCODE_GO_API_KEY` 的机器上会让芯片显示「账号 A: 获取失败」，因为宿主压根取不到 key、不会请求上游）；用量请求超时 15s → 30s，并对网络层瞬时故障（`The operation was aborted due to timeout` / `fetch failed`，实测长驻进程里约 3/10 概率）自动重试一次。账号 B 不属于本版本账号清单，不再在文档中提及。
+
 ## 安装 / Install
 
 ```bash
-dsh plugin --profile web add github:305037991x-pixel/dsh-opencode-go
+dsh plugin --profile web add "github:305037991x-pixel/dsh-plugins#path:packages/dsh-opencode-go"
 ```
 
 重启 `dsh web` 并硬刷新页面（Ctrl+Shift+R）。
@@ -38,7 +40,7 @@ dsh plugin --profile web add github:305037991x-pixel/dsh-opencode-go
 
 ```yaml
 # OpenCode GO 账号（必填；与 llm-pi-ai 的 opencode-go 路由同 key）
-OPENCODEGO_API_KEY: sk-xxx
+OPENCODE_GO_API_KEY: sk-xxx
 # CommandCode（可选，不配则不显示该行）
 COMMANDCODE_API_KEY: cmd-zzz
 ```

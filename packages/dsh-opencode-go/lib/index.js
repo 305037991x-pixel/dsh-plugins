@@ -1,7 +1,7 @@
 // dsh-opencode-go — host half.
 //
 // 提供 `GET /dsh-opencode-go/usage` 路由，并行查询两类账号的套餐用量：
-// - OpenCode GO 账号（OPENCODEGO_API_KEY，与 llm-pi-ai 的 opencode-go 路由同 key）：
+// - OpenCode GO 账号（OPENCODE_GO_API_KEY，与 llm-pi-ai 的 opencode-go 路由同 key）：
 //   调官方用量接口 `https://opencode.ai/zen/go/v1/usage`；
 // - CommandCode 账号（COMMANDCODE_API_KEY）：调官方 CLI `/usage` 命令同款
 //   `https://api.commandcode.ai/alpha/billing/credits`（5h/周窗口）+
@@ -20,12 +20,16 @@ const inject = ["webServer"];
 const USAGE_URL = "https://opencode.ai/zen/go/v1/usage";
 /** CommandCode 官方用量接口基址（/alpha 系列端点，与 command-code CLI 同源）。 */
 const CMD_API_BASE = "https://api.commandcode.ai";
-/** 请求上游接口的超时。 */
-const USAGE_TIMEOUT_MS = 15000;
+/** 请求上游接口的超时（实测上游 0.6–2.1s 就返回，留足余量以免刷新失败）。 */
+const USAGE_TIMEOUT_MS = 30000;
+/** 网络层瞬时故障的重试次数（不含首次）。 */
+const API_RETRY_LIMIT = 1;
+/** 重试前的退避等待。 */
+const RETRY_BACKOFF_MS = 400;
 
 /** 账号清单：kind 决定用量接口，credential 是凭证引用名。 */
 const ACCOUNTS = [
-	{ id: "A", kind: "opencode", credential: "OPENCODEGO_API_KEY", label: "账号 A" },
+	{ id: "A", kind: "opencode", credential: "OPENCODE_GO_API_KEY", label: "账号 A" },
 	{ id: "CMD", kind: "commandcode", credential: "COMMANDCODE_API_KEY", label: "CommandCode" }
 ];
 
@@ -46,18 +50,30 @@ async function resolveApiKey(ctx, refName) {
 	return ambient !== void 0 && ambient.value.length > 0 ? ambient.value : void 0;
 }
 
-/** Bearer 鉴权 GET，返回 { ok, status, body }；非 2xx 时 body 为截断文本。 */
-async function getJson(url, apiKey) {
-	const response = await fetch(url, {
-		headers: { Authorization: `Bearer ${apiKey}`, accept: "application/json" },
-		signal: AbortSignal.timeout(USAGE_TIMEOUT_MS)
-	});
-	const text = await response.text();
-	if (!response.ok) return { ok: false, status: response.status, body: text.slice(0, 200) };
+/**
+ * Bearer 鉴权 GET，返回 { ok, status, body }；非 2xx 时 body 为截断文本。
+ * 网络层瞬时故障（超时 / 长驻进程里 keep-alive 连接失效导致的 `fetch failed`）
+ * 自动重试一次，重试会新建连接；HTTP 错误码不重试，直接返回给调用方。
+ */
+async function getJson(url, apiKey, attempt = 0) {
 	try {
-		return { ok: true, status: response.status, body: JSON.parse(text) };
-	} catch {
-		return { ok: false, status: response.status, body: "响应解析失败" };
+		const response = await fetch(url, {
+			headers: { Authorization: `Bearer ${apiKey}`, accept: "application/json" },
+			signal: AbortSignal.timeout(USAGE_TIMEOUT_MS)
+		});
+		const text = await response.text();
+		if (!response.ok) return { ok: false, status: response.status, body: text.slice(0, 200) };
+		try {
+			return { ok: true, status: response.status, body: JSON.parse(text) };
+		} catch {
+			return { ok: false, status: response.status, body: "响应解析失败" };
+		}
+	} catch (error) {
+		if (attempt < API_RETRY_LIMIT) {
+			await new Promise((resolve) => setTimeout(resolve, RETRY_BACKOFF_MS));
+			return getJson(url, apiKey, attempt + 1);
+		}
+		throw error;
 	}
 }
 
