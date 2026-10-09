@@ -60,8 +60,12 @@ dsh plugin --profile web add github:305037991x-pixel/dsh-plugins#path:packages/<
 .\publish-all.ps1 -Message "fix: xxx"
 ```
 
-> 源码目录映射见 `publish-all.ps1` 顶部 `$sources`：dsh-account-balance 源码在本机 `~\.agents\skills-tools\dsh-account-balance`；dsh-opencode-go 源码在另一台电脑（`C:\Users\180458\...`），在那台机器之外直接改 `packages/dsh-opencode-go/` 即可。
-> README/LICENSE/.gitignore 以仓库维护版为准（同步时不覆盖）。
+> 源码目录映射见 `publish-all.ps1` 顶部 `$sourceCandidates`：按优先级取**第一个存在的路径**，全部不存在则脚本硬失败（避免把旧版本静默发布出去）。
+> - liang 机器（当前）：`D:\Deepseek\dsh-account-balance`、`D:\Deepseek\dsh-opencode-go`
+> - 180458 机器：`C:\Users\180458\.agents\skills-tools\<插件名>`
+>
+> ⚠️ `C:\Users\liang\.agents\skills-tools\dsh-opencode-go` 是**另一个血统**（单插件仓 `305037991x-pixel/dsh-opencode-go` 的 0.3.0 克隆，无 DSH 0.2.0 图标兼容层），不要把它当成本仓库插件的源码目录。
+> README 与 LICENSE 属于包内容，会随源码一起同步（保证发布出去的用法与源码一致）。
 
 ### 另一台电脑更新（已装过插件后升到新版）
 

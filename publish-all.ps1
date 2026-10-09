@@ -24,11 +24,27 @@ $root = $PSScriptRoot
 
 # ── 源码目录映射（真源码 → 发布副本）───────────────────────────────
 # 修改源码后运行本脚本，packages/ 下的对应目录会被自动同步。
-# 两个插件的源码都在本机 C:\Users\180458\.agents\skills-tools\ 下；不要直接改 packages/ 下的副本。
-# 注意：源码目录写错时脚本会直接失败（不会静默跳过），packages/ 不会被发布成旧版本。
-$sources = @{
-    'dsh-account-balance'     = 'C:\Users\180458\.agents\skills-tools\dsh-account-balance'
-    'dsh-opencode-go'         = 'C:\Users\180458\.agents\skills-tools\dsh-opencode-go'
+# 每台机器的开发目录位置可能不同，所以按优先级列出候选路径，取第一个存在的：
+#   liang 机器（本机）：D:\Deepseek\<插件名>
+#   180458 机器：      C:\Users\180458\.agents\skills-tools\<插件名>
+# ⚠ 不要把 C:\Users\liang\.agents\skills-tools\dsh-opencode-go 当源码：那是另一个血统
+#   （单插件仓 305037991x-pixel/dsh-opencode-go 的 0.3.0 克隆，无 DSH 0.2.0 图标兼容层）。
+# ⚠ 不要直接改 packages/ 下的副本：那只是发布副本，会被下次同步覆盖。
+# 注意：所有候选都不存在时脚本硬失败（不会静默跳过），packages/ 不会被发布成旧版本。
+$sourceCandidates = @{
+    'dsh-account-balance'     = @(
+        'D:\Deepseek\dsh-account-balance'
+        'C:\Users\180458\.agents\skills-tools\dsh-account-balance'
+    )
+    'dsh-opencode-go'         = @(
+        'D:\Deepseek\dsh-opencode-go'
+        'C:\Users\180458\.agents\skills-tools\dsh-opencode-go'
+    )
+}
+$sources = @{}
+foreach ($pkg in $sourceCandidates.Keys) {
+    $hit = $sourceCandidates[$pkg] | Where-Object { Test-Path $_ } | Select-Object -First 1
+    if ($hit) { $sources[$pkg] = $hit }
 }
 
 # ── 0. 前提检查 ───────────────────────────────────────────────────
@@ -52,14 +68,16 @@ if (-not $email) {
 if (-not $SkipSync) {
     Write-Host "[1/5] 同步源码 → packages/ ..." -ForegroundColor Yellow
     $syncLog = @()
-    foreach ($pkg in $sources.Keys | Sort-Object) {
+    foreach ($pkg in $sourceCandidates.Keys | Sort-Object) {
         $srcDir = $sources[$pkg]
         $dstDir = Join-Path $root "packages\$pkg"
-        if (-not (Test-Path $srcDir)) {
+        if (-not $srcDir -or -not (Test-Path $srcDir)) {
             # 源码目录不存在必须硬失败：静默跳过会让 packages/ 保持旧内容，
             # 发布出去的还是上一版插件，而仓库看起来一切正常。
-            Write-Host "  ✗ 源码目录不存在：$srcDir" -ForegroundColor Red
-            Write-Host "    请修正 publish-all.ps1 里的 `$sources 映射（不要退而直接改 packages/）。" -ForegroundColor Red
+            Write-Host "  ✗ 未找到源码目录：$pkg" -ForegroundColor Red
+            Write-Host "    已尝试的候选路径：" -ForegroundColor Red
+            $sourceCandidates[$pkg] | ForEach-Object { Write-Host "      $_" -ForegroundColor Red }
+            Write-Host "    请修正 publish-all.ps1 里的 `$sourceCandidates 映射（不要退而直接改 packages/）。" -ForegroundColor Red
             exit 1
         }
         New-Item -ItemType Directory -Force -Path $dstDir | Out-Null
@@ -72,7 +90,7 @@ if (-not $SkipSync) {
         # robocopy 退出码 <8 均算成功（1=有复制，0=无变化）
         if ($LASTEXITCODE -lt 8) {
             $syncLog += "$pkg (rc=$LASTEXITCODE)"
-            Write-Host "  ✓ $pkg 已同步" -ForegroundColor Green
+            Write-Host "  ✓ $pkg 已同步（源：$srcDir）" -ForegroundColor Green
         } else {
             Write-Host "  ✗ $pkg 同步失败 (robocopy rc=$LASTEXITCODE)" -ForegroundColor Red
             exit 1
